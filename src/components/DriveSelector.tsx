@@ -3,17 +3,18 @@ import { Button, Stack } from '@mui/material';
 import { Drive } from 'move-from-sd/src/interfaces';
 import React, { useEffect, useState } from 'react';
 
+import { usePhotoContext } from '../context';
 import { useOs } from '../hooks';
 
 import { DriveSelectorList } from './DriveSelectorList';
 
-interface DriveSelectorProperties {
-  onSelect: (drive: Drive) => void;
-}
+interface DriveSelectorProperties {}
 
-export const DriveSelector: React.FC<DriveSelectorProperties> = ({ onSelect }) => {
+export const DriveSelector: React.FC<DriveSelectorProperties> = () => {
   const [drives, setDrives] = useState<Drive[]>([]);
   const [selectedDrive, setSelectedDrive] = useState<Drive | null>(null);
+
+  const { setDrive, setStep } = usePhotoContext();
 
   const { fetchDrives } = useOs();
 
@@ -23,16 +24,19 @@ export const DriveSelector: React.FC<DriveSelectorProperties> = ({ onSelect }) =
   }, []);
 
   const handleSelectChange = (drive: Drive) => {
-    console.log(drive);
     setSelectedDrive(drive);
+    setDrive(drive);
   };
 
-  console.log(drives);
+  const handleNextClick = () => {
+    setStep('directory');
+  };
 
   return (
     <Stack gap={2}>
+      <h1>Select a Drive</h1>
       <DriveSelectorList onSelect={handleSelectChange} drives={drives} />
-      <Button variant="contained" color="primary" disabled={!selectedDrive}>
+      <Button variant="contained" color="primary" disabled={!selectedDrive} onClick={handleNextClick}>
         Next
       </Button>
     </Stack>
