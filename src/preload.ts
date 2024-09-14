@@ -3,5 +3,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electron', {
-    getDrives: () => ipcRenderer.invoke('get-drives'),
+  getDrives: () => ipcRenderer.invoke('get-drives'),
 });
