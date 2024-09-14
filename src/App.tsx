@@ -3,14 +3,14 @@ import { Drive } from 'move-from-sd/src/interfaces';
 import React from 'react';
 
 import { usePhotoContext } from './context';
-import { DriveSelector } from './pages';
+import { DriveSelector, FolderSelector } from './pages';
 
 const App: React.FC = () => {
   const { step } = usePhotoContext();
 
   const stepMap: Record<string, React.ReactElement> = {
     drive: <DriveSelector />,
-    directory: <h1>Directory</h1>,
+    directory: <FolderSelector />,
     date: <h1>Date</h1>,
   };
 

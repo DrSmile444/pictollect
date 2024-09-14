@@ -1,5 +1,5 @@
 // DriveSelector.tsx
-import { Button, Stack } from '@mui/material';
+import { Button, Stack, Typography } from '@mui/material';
 import { Drive } from 'move-from-sd/src/interfaces';
 import React, { useEffect, useState } from 'react';
 
@@ -11,9 +11,8 @@ interface DriveSelectorProperties {}
 
 export const DriveSelector: React.FC<DriveSelectorProperties> = () => {
   const [drives, setDrives] = useState<Drive[]>([]);
-  const [selectedDrive, setSelectedDrive] = useState<Drive | null>(null);
 
-  const { setDrive, setStep } = usePhotoContext();
+  const { setDrive, drive, setStep } = usePhotoContext();
 
   const { fetchDrives } = useOs();
 
@@ -23,7 +22,6 @@ export const DriveSelector: React.FC<DriveSelectorProperties> = () => {
   }, []);
 
   const handleSelectChange = (drive: Drive) => {
-    setSelectedDrive(drive);
     setDrive(drive);
   };
 
@@ -33,11 +31,15 @@ export const DriveSelector: React.FC<DriveSelectorProperties> = () => {
 
   return (
     <Stack gap={2}>
-      <h1>Select a Drive</h1>
+      <Typography variant="h2" typography="h4">
+        Select a Drive
+      </Typography>
       <DriveSelectorList onSelect={handleSelectChange} drives={drives} />
-      <Button variant="contained" color="primary" disabled={!selectedDrive} onClick={handleNextClick}>
-        Next
-      </Button>
+      <Stack gap={1} direction="row" alignItems="right">
+        <Button variant="contained" color="primary" disabled={!drive} onClick={handleNextClick}>
+          Next
+        </Button>
+      </Stack>
     </Stack>
   );
 };
