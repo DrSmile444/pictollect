@@ -38,17 +38,15 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, d
         {drives.map((drive) => (
           <ListItemButton key={drive.drive} selected={selectedDrive === drive} onClick={() => handleListItemClick(drive)}>
             <ListItemIcon>{icons[drive.driveType]}</ListItemIcon>
-            <ListItemText
-              primary={drive.drive + ' ' + drive.name}
-              secondary={
-                <Stack gap={1}>
-                  <LinearProgress variant="determinate" value={100 - (drive.freeSpace / drive.size) * 100} />
-                  <Typography variant="body2">
-                    {prettyBytes(drive.freeSpace)} free of {prettyBytes(drive.size)}
-                  </Typography>
-                </Stack>
-              }
-            />
+            <Stack gap={1} direction="column" width={1}>
+              <ListItemText primary={drive.drive + ' ' + drive.name} />
+              <Stack gap={1}>
+                <LinearProgress variant="determinate" value={100 - (drive.freeSpace / drive.size) * 100} />
+                <Typography variant="body2">
+                  {prettyBytes(drive.freeSpace)} free of {prettyBytes(drive.size)}
+                </Typography>
+              </Stack>
+            </Stack>
           </ListItemButton>
         ))}
       </List>
