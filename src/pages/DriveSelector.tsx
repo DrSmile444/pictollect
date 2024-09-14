@@ -3,10 +3,9 @@ import { Button, Stack } from '@mui/material';
 import { Drive } from 'move-from-sd/src/interfaces';
 import React, { useEffect, useState } from 'react';
 
+import { DriveSelectorList } from '../components';
 import { usePhotoContext } from '../context';
 import { useOs } from '../hooks';
-
-import { DriveSelectorList } from './DriveSelectorList';
 
 interface DriveSelectorProperties {}
 

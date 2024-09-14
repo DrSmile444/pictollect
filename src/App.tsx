@@ -2,8 +2,8 @@ import Box from '@mui/material/Box';
 import { Drive } from 'move-from-sd/src/interfaces';
 import React from 'react';
 
-import { DriveSelector } from './components/DriveSelector';
-import { usePhotoContext } from './context/photo.context';
+import { usePhotoContext } from './context';
+import { DriveSelector } from './pages';
 
 const App: React.FC = () => {
   const { step } = usePhotoContext();
