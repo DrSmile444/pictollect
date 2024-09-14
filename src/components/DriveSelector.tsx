@@ -3,21 +3,24 @@ import { Button, Stack } from '@mui/material';
 import { Drive } from 'move-from-sd/src/interfaces';
 import React, { useEffect, useState } from 'react';
 
+import { useOs } from '../hooks';
+
 import { DriveSelectorList } from './DriveSelectorList';
 
 interface DriveSelectorProperties {
   onSelect: (drive: Drive) => void;
-  fetchDrives: () => Promise<Drive[]>;
 }
 
-export const DriveSelector: React.FC<DriveSelectorProperties> = ({ onSelect, fetchDrives }) => {
+export const DriveSelector: React.FC<DriveSelectorProperties> = ({ onSelect }) => {
   const [drives, setDrives] = useState<Drive[]>([]);
   const [selectedDrive, setSelectedDrive] = useState<Drive | null>(null);
+
+  const { fetchDrives } = useOs();
 
   useEffect(() => {
     // Fetch drives when the component mounts
     fetchDrives().then(setDrives).catch(console.error);
-  }, [fetchDrives]);
+  }, []);
 
   const handleSelectChange = (drive: Drive) => {
     console.log(drive);
