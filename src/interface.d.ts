@@ -1,8 +1,6 @@
-import { Drive } from 'move-from-sd/src/interfaces';
+import { BaseMethods } from 'move-from-sd/src/os/base-methods';
 
-export interface IElectronAPI {
-  getDrives: () => Promise<Drive[]>;
-}
+export type IElectronAPI = BaseMethods;
 
 declare global {
   interface Window {

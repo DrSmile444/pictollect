@@ -4,4 +4,6 @@ import { contextBridge, ipcRenderer } from 'electron';
 
 contextBridge.exposeInMainWorld('electron', {
   getDrives: () => ipcRenderer.invoke('get-drives'),
+  getFolders: (drive: string) => ipcRenderer.invoke('get-folders', drive),
+  getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
 });

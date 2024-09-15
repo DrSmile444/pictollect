@@ -7,5 +7,14 @@ export const useOs = () => {
     return [];
   };
 
-  return { fetchDrives };
+  const fetchFolders = async (drive: string) => {
+    // Fetch files using Electron IPC communication
+    if (window.electron && window.electron.getFiles) {
+      return window.electron.getFolders(drive);
+    }
+
+    return [];
+  };
+
+  return { fetchDrives, fetchFolders };
 };

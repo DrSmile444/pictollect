@@ -1,10 +1,14 @@
 import { Button, Stack, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { usePhotoContext } from '../context';
+import { useOs } from '../hooks';
 
 export const FolderSelector = () => {
-  const { directory, setStep } = usePhotoContext();
+  const { drive, directory, setStep } = usePhotoContext();
+  const [folders, setFolders] = React.useState<string[]>([]);
+
+  const { fetchFolders } = useOs();
 
   const handleNextClick = () => {
     setStep('date');
@@ -13,6 +17,15 @@ export const FolderSelector = () => {
   const handlePreviousClick = () => {
     setStep('drive');
   };
+
+  useEffect(() => {
+    const fetch = async () => {
+      const folders = await fetchFolders(drive.drive);
+      setFolders(folders);
+    };
+
+    fetch();
+  }, [drive]);
 
   return (
     <Stack gap={2}>

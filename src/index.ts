@@ -54,10 +54,30 @@ app.on('activate', () => {
 // IPC communication to fetch drives
 ipcMain.handle('get-drives', async () => {
   try {
-    const drives = await osUtils.getDrives(); // Your logic to get the drives
+    const drives = await osUtils.getDrives();
     return drives;
   } catch (error) {
     console.error('Failed to fetch drives:', error);
+    return [];
+  }
+});
+
+ipcMain.handle('get-folders', async (event, drive: string) => {
+  try {
+    const folders = await osUtils.getFolders(drive);
+    return folders;
+  } catch (error) {
+    console.error('Failed to fetch folders:', error);
+    return [];
+  }
+});
+
+ipcMain.handle('get-files', async (event, path: string) => {
+  try {
+    const files = await osUtils.getFiles(path);
+    return files;
+  } catch (error) {
+    console.error('Failed to fetch files:', error);
     return [];
   }
 });
