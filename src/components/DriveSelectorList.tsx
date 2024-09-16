@@ -1,9 +1,19 @@
-import { DynamicFormRounded, SdStorageRounded, StorageRounded } from '@mui/icons-material';
+import {
+  DynamicFormOutlined,
+  DynamicFormRounded,
+  FolderOffOutlined,
+  SdStorageOutlined,
+  SdStorageRounded,
+  StorageOutlined,
+  StorageRounded,
+} from '@mui/icons-material';
 import { Box, LinearProgress, List, ListItemButton, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
 import { Drive } from 'move-from-sd/src/interfaces';
 import prettyBytes from 'pretty-bytes';
 import * as React from 'react';
 import { FC, useEffect, useState } from 'react';
+
+import { EmptyState } from './EmptyState';
 
 interface DriveSelectorListProperties {
   onSelect: (drive: Drive) => void;
@@ -18,10 +28,16 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, d
     onSelect(drive);
   };
 
-  const icons: Record<Drive['driveType'], React.ReactElement> = {
+  const iconsSelected: Record<Drive['driveType'], React.ReactElement> = {
     local: <StorageRounded />,
     removable: <SdStorageRounded />,
     unknown: <DynamicFormRounded />,
+  };
+
+  const icons: Record<Drive['driveType'], React.ReactElement> = {
+    local: <StorageOutlined />,
+    removable: <SdStorageOutlined />,
+    unknown: <DynamicFormOutlined />,
   };
 
   // We need to create auto select of first removable drive
@@ -35,20 +51,39 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, d
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
       <List component="nav" aria-label="main mailbox folders">
-        {drives.map((drive) => (
-          <ListItemButton key={drive.drive} selected={selectedDrive === drive} onClick={() => handleListItemClick(drive)}>
-            <ListItemIcon>{icons[drive.driveType]}</ListItemIcon>
-            <Stack gap={1} direction="column" width={1}>
-              <ListItemText primary={drive.drive + ' ' + drive.name} />
-              <Stack gap={1}>
-                <LinearProgress variant="determinate" value={100 - (drive.freeSpace / drive.size) * 100} />
-                <Typography variant="body2">
-                  {prettyBytes(drive.freeSpace)} free of {prettyBytes(drive.size)}
-                </Typography>
+        {drives.length === 0 && (
+          <EmptyState
+            icon={<FolderOffOutlined />}
+            title="No devices"
+            description={
+              <>
+                The list of available storage devices are empty.
+                <br />
+                Please, connect a storage device or SD card and reload the application.
+              </>
+            }
+          />
+        )}
+
+        {drives.map((drive) => {
+          const isSelected = selectedDrive === drive;
+          const icon = isSelected ? iconsSelected[drive.driveType] : icons[drive.driveType];
+
+          return (
+            <ListItemButton key={drive.drive} selected={isSelected} onClick={() => handleListItemClick(drive)}>
+              <ListItemIcon>{icon}</ListItemIcon>
+              <Stack gap={1} direction="column" width={1}>
+                <ListItemText primary={drive.drive + ' ' + drive.name} />
+                <Stack gap={1}>
+                  <LinearProgress variant="determinate" value={100 - (drive.freeSpace / drive.size) * 100} />
+                  <Typography variant="body2">
+                    {prettyBytes(drive.freeSpace)} free of {prettyBytes(drive.size)}
+                  </Typography>
+                </Stack>
               </Stack>
-            </Stack>
-          </ListItemButton>
-        ))}
+            </ListItemButton>
+          );
+        })}
       </List>
     </Box>
   );
