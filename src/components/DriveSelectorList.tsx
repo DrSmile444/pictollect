@@ -18,10 +18,11 @@ import { EmptyState } from './EmptyState';
 interface DriveSelectorListProperties {
   onSelect: (drive: Drive) => void;
   drives: Drive[];
+  drive: Drive | null;
 }
 
-export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, drives }) => {
-  const [selectedDrive, setSelectedDrive] = useState<Drive | null>(null);
+export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, drives, drive }) => {
+  const [selectedDrive, setSelectedDrive] = useState<Drive | null>(drive || null);
 
   const handleListItemClick = (drive: Drive) => {
     setSelectedDrive(drive);
@@ -42,11 +43,15 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, d
 
   // We need to create auto select of first removable drive
   useEffect(() => {
+    if (selectedDrive) {
+      return;
+    }
+
     const removableDrive = drives.find((drive) => drive.driveType === 'removable');
     if (removableDrive) {
       handleListItemClick(removableDrive);
     }
-  }, [drives]);
+  }, [drives, selectedDrive]);
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -66,7 +71,7 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, d
         )}
 
         {drives.map((drive) => {
-          const isSelected = selectedDrive === drive;
+          const isSelected = selectedDrive?.drive === drive.drive;
           const icon = isSelected ? iconsSelected[drive.driveType] : icons[drive.driveType];
 
           return (
