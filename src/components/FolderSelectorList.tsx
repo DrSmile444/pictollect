@@ -6,12 +6,13 @@ import { EmptyState } from './EmptyState';
 
 export interface FolderSelectorListProperties {
   folders: string[];
+  folder: string | null;
   onFolderSelect: (folder: string) => void;
 }
 
 // we need to add filtering of folders
-export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, onFolderSelect }) => {
-  const [selectedFolder, setSelectedFolder] = useState<string | null>(null);
+export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, onFolderSelect, folder }) => {
+  const [selectedFolder, setSelectedFolder] = useState<string | null>(folder);
   const [filteredFolders, setFilteredFolders] = useState<string[]>([]);
   const [search, setSearch] = useState<string>('');
 

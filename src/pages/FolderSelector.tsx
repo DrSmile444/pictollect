@@ -37,7 +37,7 @@ export const FolderSelector = () => {
       <Typography variant="h2" typography="h4">
         Select a Folder
       </Typography>
-      <FolderSelectorList folders={folders} onFolderSelect={handleFolderSelect} />
+      <FolderSelectorList folders={folders} onFolderSelect={handleFolderSelect} folder={directory} />
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="outlined" color="primary" onClick={handlePreviousClick}>
           Previous
