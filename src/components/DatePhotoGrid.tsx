@@ -1,6 +1,9 @@
-import { Card, CardContent, CardMedia, Grid, Typography } from '@mui/material';
+import { Card, CardContent, CardMedia, Typography } from '@mui/material';
+import Grid from '@mui/material/Grid2';
 import { FileList } from 'move-from-sd/src/interfaces';
 import React, { FC, useEffect, useState } from 'react';
+
+import { DatePhoto } from './DatePhoto';
 
 export interface DatePhotoGridProperties {
   fileList: FileList | null;
@@ -15,8 +18,15 @@ export const DatePhotoGrid: FC<DatePhotoGridProperties> = ({ fileList }) => {
         const files = fileList.files.filter((file) => file.fullDate === dateInfo.value);
 
         return (
-          <Grid item xs={12} md={6} key={index}>
+          <Grid size={{ xs: 12, md: 6 }} key={index}>
             <Card>
+              {/* Display Photos (max 4) */}
+              <Grid container spacing={0}>
+                {files.slice(0, 4).map((photo) => (
+                  <DatePhoto photo={photo} key={photo.file} />
+                ))}
+              </Grid>
+
               <CardContent>
                 {/* Date Title */}
                 <Typography variant="h6">{dateInfo.name}</Typography>
@@ -25,28 +35,6 @@ export const DatePhotoGrid: FC<DatePhotoGridProperties> = ({ fileList }) => {
                   Total Size: {dateInfo.value}
                 </Typography>
               </CardContent>
-
-              {/* Display Photos (max 4) */}
-              <Grid container spacing={2}>
-                {files.slice(0, 4).map((photo, photoIndex) => {
-                  const [path, setPath] = useState<Electron.NativeImage | null>(null);
-
-                  useEffect(() => {
-                    loadImage(photo.file).then((imagePath) => setPath(imagePath));
-                  }, []);
-
-                  return (
-                    <Grid item xs={6} key={photoIndex}>
-                      <CardMedia
-                        component="img"
-                        height="140"
-                        image={path} // Replace with the correct path or URL for photos
-                        alt={`Photo from ${dateInfo.name}`}
-                      />
-                    </Grid>
-                  );
-                })}
-              </Grid>
             </Card>
           </Grid>
         );

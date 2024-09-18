@@ -30,5 +30,7 @@ export const useOs = () => {
     };
   };
 
-  return { fetchDrives, fetchFolders, getFiles };
+  const loadImage = async (photoPath: string) => window.electron.getImagePath(photoPath);
+
+  return { fetchDrives, fetchFolders, getFiles, loadImage };
 };

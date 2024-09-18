@@ -23,6 +23,7 @@ export const DateSelector = () => {
   useEffect(() => {
     const fetch = async () => {
       const files = await getFiles('/Users/dmytrovakulenko/Downloads/photos');
+      // const files = await getFiles('/Users/dmytrovakulenko/Downloads');
       setFiles(files);
       console.log(files);
     };
