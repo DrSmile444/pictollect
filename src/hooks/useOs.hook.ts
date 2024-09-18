@@ -1,3 +1,5 @@
+import { FileList } from 'move-from-sd/src/interfaces';
+
 export const useOs = () => {
   const fetchDrives = async () => {
     // Fetch drives using Electron IPC communication
@@ -16,5 +18,17 @@ export const useOs = () => {
     return [];
   };
 
-  return { fetchDrives, fetchFolders };
+  const getFiles = async (path: string): Promise<FileList> => {
+    // Fetch files using Electron IPC communication
+    if (window.electron && window.electron.getFiles) {
+      return window.electron.getFiles(path);
+    }
+
+    return {
+      files: [],
+      dates: [],
+    };
+  };
+
+  return { fetchDrives, fetchFolders, getFiles };
 };
