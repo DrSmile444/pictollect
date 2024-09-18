@@ -89,21 +89,8 @@ ipcMain.handle(
   'get-image-path',
   // (event, filePath: string) => 'file://' + filePath,
   async (event, filePath: string): Promise<string | null> => {
-    // path.extname(filePath);
-    console.log(nativeImage.createFromPath(filePath));
-    const image = nativeImage.createFromPath(filePath);
-    const imageBuffer = image.toJPEG(10);
-
-    if (imageBuffer.length === 0) {
-      return null;
-    }
-
-    console.log(image);
-    console.log(path.extname(filePath));
-    console.log(image.toJPEG(10).length);
-    const file = await sharp(image.toJPEG(10)).resize(300).jpeg().toBuffer();
-    // return file.toString('base64');
-    return `data:image/png;base64,${file.toString('base64')}`;
+    const thumbnail = await nativeImage.createThumbnailFromPath(filePath, { width: 300, height: 200 });
+    return `data:image/png;base64,${thumbnail.toJPEG(90).toString('base64')}`;
   },
 );
 
