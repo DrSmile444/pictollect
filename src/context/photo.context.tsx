@@ -25,7 +25,7 @@ export const usePhotoContext = (): PhotoContextType => {
 
 // Provider component
 export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [step, setStep] = useState<'drive' | 'directory' | 'date'>('date');
+  const [step, setStep] = useState<'drive' | 'directory' | 'date'>('drive');
   const [drive, setDrive] = useState<Drive | null>(null);
   const [directory, setDirectory] = useState<string | null>(null);
   const [dateOfPhotos, setDateOfPhotos] = useState<Date | null>(null);

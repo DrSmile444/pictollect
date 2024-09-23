@@ -7,7 +7,7 @@ import { usePhotoContext } from '../context';
 import { useOs } from '../hooks';
 
 export const DateSelector = () => {
-  const { dateOfPhotos, setStep } = usePhotoContext();
+  const { dateOfPhotos, directory, setStep } = usePhotoContext();
   const [files, setFiles] = React.useState<FileList | null>(null);
 
   const { getFiles } = useOs();
@@ -22,7 +22,9 @@ export const DateSelector = () => {
 
   useEffect(() => {
     const fetch = async () => {
-      const files = await getFiles('/Users/dmytrovakulenko/Downloads/photos');
+      // const files = await getFiles('/Users/dmytrovakulenko/Downloads/photos');
+      // const files = await getFiles(directory);
+      const files = await getFiles('F:/DCIM/106EOSR6');
       // const files = await getFiles('/Users/dmytrovakulenko/Downloads');
       setFiles(files);
       console.log(files);
