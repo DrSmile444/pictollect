@@ -1,4 +1,5 @@
 // DriveSelector.tsx
+import { RefreshRounded } from '@mui/icons-material';
 import { Button, Skeleton, Stack, Typography } from '@mui/material';
 import { Drive } from 'move-from-sd/src/interfaces';
 import React, { FC, useEffect, useState } from 'react';
@@ -15,15 +16,18 @@ export const DriveSelector: FC = () => {
 
   const { fetchDrives } = useOs();
 
-  useEffect(() => {
+  const refreshDrives = () => {
     setIsLoading(true);
-    // Fetch drives when the component mounts
     fetchDrives()
       .then(setDrives)
       .catch(console.error)
       .finally(() => {
         setIsLoading(false);
       });
+  };
+
+  useEffect(() => {
+    refreshDrives();
   }, []);
 
   const handleSelectChange = (drive: Drive) => {
@@ -37,9 +41,14 @@ export const DriveSelector: FC = () => {
 
   return (
     <Stack gap={2}>
-      <Typography variant="h2" typography="h4">
-        Select a Drive
-      </Typography>
+      <Stack gap={2} direction="row" justifyContent="space-between">
+        <Typography variant="h2" typography="h4">
+          Select a Drive
+        </Typography>
+        <Button onClick={refreshDrives} variant="outlined" startIcon={<RefreshRounded />}>
+          Refresh
+        </Button>
+      </Stack>
       {isLoading && (
         <Stack gap={1} direction="column" alignItems="center" width="100%">
           <Skeleton variant="rounded" width="100%" height={88} />
