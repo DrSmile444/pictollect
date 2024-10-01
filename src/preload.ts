@@ -6,5 +6,5 @@ contextBridge.exposeInMainWorld('electron', {
   getDrives: () => ipcRenderer.invoke('get-drives'),
   getFolders: (drive: string) => ipcRenderer.invoke('get-folders', drive),
   getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
-  getImagePath: (filePath: string) => ipcRenderer.invoke('get-image-path', filePath),
+  getImageThumbnail: (filePath: string) => ipcRenderer.invoke('get-image-thumbnail', filePath),
 });
