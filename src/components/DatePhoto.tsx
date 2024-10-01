@@ -1,10 +1,17 @@
-import { ImageNotSupported } from '@mui/icons-material';
-import { CardMedia, Skeleton, Stack } from '@mui/material';
+import {
+  ImageNotSupported,
+  ImageRounded,
+  RawOn,
+  VideoCall,
+  VideoCameraBackRounded,
+  VideoCameraFrontRounded,
+} from '@mui/icons-material';
+import { CardMedia, Skeleton, Stack, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
+import { FileMeta } from 'move-from-sd/src/interfaces';
 import React, { FC, useEffect, useState } from 'react';
 
-import { FileMeta } from '../../../move-from-sd/src/interfaces';
 import { useOs } from '../hooks';
 
 export interface DatePhotoProperties {
@@ -27,7 +34,7 @@ export const DatePhoto: FC<DatePhotoProperties> = ({ photo, gridSize }) => {
   }, []);
 
   return (
-    <Grid size={{ xs: 12 / gridSize }} sx={{ maxWidth: height }}>
+    <Grid size={{ xs: 12 / gridSize }} sx={{ maxWidth: height, position: 'relative' }}>
       {isLoading && <Skeleton variant="rounded" width="100%" height={height} />}
       {!isLoading && !!path && <CardMedia component="img" height={height} image={path} alt={photo.file} />}
       {!isLoading && !path && (
@@ -35,6 +42,13 @@ export const DatePhoto: FC<DatePhotoProperties> = ({ photo, gridSize }) => {
           <ImageNotSupported />
         </Stack>
       )}
+      <Box sx={{ position: 'absolute', right: 4, top: 4 }}>
+        <Stack sx={{ color: '#fff' }} alignItems="center" direction="row">
+          {photo.hasRelatedJpg && <ImageRounded fontSize="small" />}
+          {photo.hasRawPhoto && <RawOn />}
+          {photo.isVideo && <VideoCameraFrontRounded />}
+        </Stack>
+      </Box>
     </Grid>
   );
 };
