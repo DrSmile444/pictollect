@@ -9,7 +9,7 @@ export interface DatePhotoGridProperties {
 }
 
 export const DatePhotoGrid: FC<DatePhotoGridProperties> = ({ fileList }) => (
-  <Grid container spacing={4}>
+  <Grid container spacing={4} justifyContent="center">
     {fileList?.dates.map((dateInfo, index) => {
       const files = fileList.files.filter((file) => file.fullDate === dateInfo.value);
 

@@ -1,7 +1,9 @@
 import { Card, CardContent, Typography } from '@mui/material';
 import Grid from '@mui/material/Grid2';
 import { DateMeta, FileMeta } from 'move-from-sd/src/interfaces';
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
+
+import { selectBalancedItems } from '../utils/selectBalancedItems.util';
 
 import { DatePhoto } from './DatePhoto';
 
@@ -11,15 +13,24 @@ export interface DatePhotoGridItemProperties {
 }
 
 export const DatePhotoGridItem: FC<DatePhotoGridItemProperties> = ({ files, dateInfo }) => {
-  const fileList = files.filter((photo) => !photo.isRaw).slice(0, 4);
+  const gridSize = 3;
+
+  const fileList = useMemo(
+    () =>
+      selectBalancedItems(
+        files.filter((photo) => !photo.isRaw),
+        gridSize * gridSize,
+      ),
+    files,
+  );
 
   return (
-    <Grid size={{ xs: 12, md: 6 }}>
+    <Grid size={{ xs: 12, md: 6 }} sx={{ maxWidth: 400 }}>
       <Card>
         {/* Display Photos (max 4) */}
         <Grid container spacing={0}>
           {fileList.map((photo) => (
-            <DatePhoto photo={photo} key={photo.file} />
+            <DatePhoto photo={photo} key={photo.file} gridSize={gridSize} />
           ))}
         </Grid>
 

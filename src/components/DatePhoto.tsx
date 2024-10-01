@@ -9,12 +9,15 @@ import { useOs } from '../hooks';
 
 export interface DatePhotoProperties {
   photo: FileMeta;
+  gridSize: number;
 }
 
-export const DatePhoto: FC<DatePhotoProperties> = ({ photo }) => {
+export const DatePhoto: FC<DatePhotoProperties> = ({ photo, gridSize }) => {
   const { loadImage } = useOs();
   const [path, setPath] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const height = 400 / gridSize;
 
   useEffect(() => {
     setIsLoading(true);
@@ -24,11 +27,11 @@ export const DatePhoto: FC<DatePhotoProperties> = ({ photo }) => {
   }, []);
 
   return (
-    <Grid size={{ xs: 6 }}>
-      {isLoading && <Skeleton variant="rounded" width="100%" height={140} />}
-      {!isLoading && !!path && <CardMedia component="img" height="140" image={path} alt={photo.file} />}
+    <Grid size={{ xs: 12 / gridSize }} sx={{ maxWidth: height }}>
+      {isLoading && <Skeleton variant="rounded" width="100%" height={height} />}
+      {!isLoading && !!path && <CardMedia component="img" height={height} image={path} alt={photo.file} />}
       {!isLoading && !path && (
-        <Stack height={140} width="100%" alignItems="center" justifyContent="center">
+        <Stack height={height} width="100%" alignItems="center" justifyContent="center">
           <ImageNotSupported />
         </Stack>
       )}
