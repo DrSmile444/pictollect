@@ -32,5 +32,14 @@ export const useOs = () => {
 
   const loadImage = async (photoPath: string) => window.electron.getImageThumbnail(photoPath);
 
-  return { fetchDrives, fetchFolders, getFiles, loadImage };
+  const pickFolder = async () => {
+    // Pick a folder using Electron IPC communication
+    if (window.electron && window.electron.pickFolder) {
+      return window.electron.pickFolder();
+    }
+
+    return null;
+  };
+
+  return { fetchDrives, fetchFolders, getFiles, loadImage, pickFolder };
 };
