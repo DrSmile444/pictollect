@@ -17,5 +17,8 @@
     "./.eslint/unicorn.eslintrc.json",
     "./.eslint/unicorn-react.eslintrc.json"
   ],
-  "parser": "@typescript-eslint/parser"
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "unicorn/prefer-module": "off"
+  }
 }

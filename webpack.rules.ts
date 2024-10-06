@@ -19,6 +19,21 @@ export const rules: Required<ModuleOptions>['rules'] = [
     },
   },
   {
+    test: /\.worker\.(ts|js)$/, // Match worker files
+    use: [
+      {
+        loader: 'worker-loader',
+        options: {
+          filename: '[name].js',
+        },
+      },
+      {
+        loader: 'ts-loader',
+        options: { transpileOnly: true }, // Transpile TypeScript
+      },
+    ],
+  },
+  {
     test: /\.tsx?$/,
     exclude: /(node_modules|\.webpack)/,
     use: {

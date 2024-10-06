@@ -19,5 +19,6 @@ export const mainConfig: Configuration = {
   },
   externals: {
     sharp: 'commonjs sharp',
+    child_process: 'commonjs child_process',
   },
 };
