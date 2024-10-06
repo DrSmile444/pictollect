@@ -1,11 +1,4 @@
-import {
-  ImageNotSupported,
-  ImageRounded,
-  RawOn,
-  VideoCall,
-  VideoCameraBackRounded,
-  VideoCameraFrontRounded,
-} from '@mui/icons-material';
+import { ImageNotSupported, ImageRounded, RawOn, VideoCall, VideoCameraBackRounded, VideoCameraFrontRounded } from '@mui/icons-material';
 import { CardMedia, Skeleton, Stack, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
@@ -35,7 +28,7 @@ export const DatePhoto: FC<DatePhotoProperties> = ({ photo, gridSize }) => {
 
   return (
     <Grid size={{ xs: 12 / gridSize }} sx={{ maxWidth: height, position: 'relative' }}>
-      {isLoading && <Skeleton variant="rounded" width="100%" height={height} />}
+      {isLoading && <Skeleton variant="rounded" width={height - 8} height={height - 4} sx={{ margin: 0.5 }} />}
       {!isLoading && !!path && <CardMedia component="img" height={height} image={path} alt={photo.file} />}
       {!isLoading && !path && (
         <Stack height={height} width="100%" alignItems="center" justifyContent="center">

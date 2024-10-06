@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { FolderSelectorList } from '../components';
 import { usePhotoContext } from '../context';
@@ -7,7 +7,8 @@ import { useOs } from '../hooks';
 
 export const FolderSelector = () => {
   const { drive, directory, setDirectory, setStep } = usePhotoContext();
-  const [folders, setFolders] = React.useState<string[]>([]);
+  const [folders, setFolders] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { fetchFolders } = useOs();
 
@@ -25,8 +26,10 @@ export const FolderSelector = () => {
 
   useEffect(() => {
     const fetch = async () => {
+      setIsLoading(true);
       const folders = await fetchFolders(drive.drive);
       setFolders(folders);
+      setIsLoading(false);
     };
 
     fetch();
@@ -37,7 +40,7 @@ export const FolderSelector = () => {
       <Typography variant="h2" typography="h4">
         Select a Folder
       </Typography>
-      <FolderSelectorList folders={folders} onFolderSelect={handleFolderSelect} folder={directory} />
+      <FolderSelectorList folders={folders} onFolderSelect={handleFolderSelect} folder={directory} isLoading={isLoading} />
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="outlined" color="primary" onClick={handlePreviousClick}>
           Previous

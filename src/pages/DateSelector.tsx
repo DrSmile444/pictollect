@@ -1,6 +1,6 @@
 import { Button, Stack, Typography } from '@mui/material';
 import { FileList } from 'move-from-sd/src/interfaces';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { DatePhotoGrid } from '../components/DatePhotoGrid';
 import { usePhotoContext } from '../context';
@@ -8,7 +8,8 @@ import { useOs } from '../hooks';
 
 export const DateSelector = () => {
   const { dateOfPhotos, directory, setStep } = usePhotoContext();
-  const [files, setFiles] = React.useState<FileList | null>(null);
+  const [files, setFiles] = useState<FileList | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { getFiles } = useOs();
 
@@ -22,11 +23,13 @@ export const DateSelector = () => {
 
   useEffect(() => {
     const fetch = async () => {
+      setIsLoading(true);
       // const files = await getFiles('/Users/dmytrovakulenko/Downloads/photos');
       const files = await getFiles(directory);
       // const files = await getFiles('F:/DCIM/106EOSR6');
       // const files = await getFiles('/Users/dmytrovakulenko/Downloads');
       setFiles(files);
+      setIsLoading(false);
       console.log(files);
     };
 
@@ -38,7 +41,7 @@ export const DateSelector = () => {
       <Typography variant="h2" typography="h4">
         Select a Date
       </Typography>
-      <DatePhotoGrid fileList={files} />
+      <DatePhotoGrid fileList={files} isLoading={isLoading} />
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="outlined" color="primary" onClick={handlePreviousClick}>
           Previous

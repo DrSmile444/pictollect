@@ -1,5 +1,5 @@
 import { FolderOffOutlined, FolderOutlined, FolderRounded, SearchRounded } from '@mui/icons-material';
-import { InputAdornment, List, ListItemButton, ListItemIcon, ListItemText, Stack, TextField, Typography } from '@mui/material';
+import { InputAdornment, List, ListItemButton, ListItemIcon, ListItemText, Skeleton, Stack, TextField, Typography } from '@mui/material';
 import React, { ChangeEvent, FC, useEffect, useState } from 'react';
 
 import { EmptyState } from './EmptyState';
@@ -8,10 +8,11 @@ export interface FolderSelectorListProperties {
   folders: string[];
   folder: string | null;
   onFolderSelect: (folder: string) => void;
+  isLoading?: boolean;
 }
 
 // we need to add filtering of folders
-export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, onFolderSelect, folder }) => {
+export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, onFolderSelect, folder, isLoading }) => {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(folder);
   const [filteredFolders, setFilteredFolders] = useState<string[]>([]);
   const [search, setSearch] = useState<string>('');
@@ -28,6 +29,28 @@ export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, 
   useEffect(() => {
     setFilteredFolders(folders.filter((folder) => folder.toLowerCase().includes(search.toLowerCase())));
   }, [folders, search]);
+
+  if (isLoading) {
+    return (
+      <Stack gap={1} direction="column" width="100%">
+        <Skeleton variant="rounded" width="100%" height={56} />
+        <Stack gap={1} direction="column" sx={{ width: '100%', maxHeight: 400, minHeight: 400, overflow: 'hidden' }}>
+          <Skeleton variant="rounded" width={200} height={44} />
+          <Skeleton variant="rounded" width={200} height={44} />
+          <Skeleton variant="rounded" width={300} height={44} />
+          <Skeleton variant="rounded" width={400} height={44} />
+          <Skeleton variant="rounded" width={400} height={44} />
+          <Skeleton variant="rounded" width={300} height={44} />
+          <Skeleton variant="rounded" width={300} height={44} />
+          <Skeleton variant="rounded" width={300} height={44} />
+          <Skeleton variant="rounded" width={400} height={44} />
+          <Skeleton variant="rounded" width={200} height={44} />
+          <Skeleton variant="rounded" width={300} height={44} />
+        </Stack>
+        <Skeleton variant="rounded" width={200} height={20} />
+      </Stack>
+    );
+  }
 
   return (
     <Stack gap={1}>
