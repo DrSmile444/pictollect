@@ -61,6 +61,7 @@ export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, 
         variant="outlined"
         value={search}
         onChange={handleFolderFilter}
+        autoFocus={true}
         slotProps={{
           input: {
             endAdornment: (

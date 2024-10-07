@@ -14,7 +14,7 @@ export const DateSelector = () => {
   const { getFiles } = useOs();
 
   const handleNextClick = () => {
-    setStep(null);
+    setStep('name');
   };
 
   const handlePreviousClick = () => {
@@ -27,6 +27,7 @@ export const DateSelector = () => {
       const files = await getFiles(directory);
       setFiles(files);
       setIsLoading(false);
+      console.info('Files:', files);
     };
 
     fetch();
