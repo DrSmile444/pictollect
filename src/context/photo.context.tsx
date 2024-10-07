@@ -1,5 +1,5 @@
 import { Drive } from 'move-from-sd/src/interfaces';
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 interface PhotoContextType {
   step: 'drive' | 'directory' | 'date';
@@ -10,6 +10,7 @@ interface PhotoContextType {
   setDrive: (drive: Drive) => void;
   setDirectory: (directory: string) => void;
   setDateOfPhotos: (date: Date) => void;
+  hasPrevious: boolean | null;
 }
 
 const PhotoContext = createContext<PhotoContextType | undefined>(undefined);
@@ -30,8 +31,39 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [directory, setDirectory] = useState<string | null>(null);
   const [dateOfPhotos, setDateOfPhotos] = useState<Date | null>(null);
 
+  const [hasPrevious, setHasPrevious] = useState<boolean | null>(null);
+
+  const fetchStore = async () => {
+    const store = await window.electronStore.get('photoContext');
+    if (store) {
+      setDrive(store.drive);
+      setDirectory(store.directory);
+      setDateOfPhotos(store.dateOfPhotos);
+      setStep(store.step);
+
+      setHasPrevious(true);
+    }
+
+    setHasPrevious(false);
+  };
+
+  useEffect(() => {
+    if (hasPrevious !== null) {
+      window.electronStore.set('photoContext', {
+        drive,
+        directory,
+        dateOfPhotos,
+        step,
+      });
+    }
+  }, [step, drive, directory, dateOfPhotos, hasPrevious]);
+
+  useEffect(() => {
+    fetchStore();
+  }, []);
+
   return (
-    <PhotoContext.Provider value={{ drive, directory, dateOfPhotos, step, setDrive, setDirectory, setDateOfPhotos, setStep }}>
+    <PhotoContext.Provider value={{ drive, directory, dateOfPhotos, step, hasPrevious, setDrive, setDirectory, setDateOfPhotos, setStep }}>
       {children}
     </PhotoContext.Provider>
   );

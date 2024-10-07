@@ -12,7 +12,7 @@ export const DriveSelector: FC = () => {
   const [drives, setDrives] = useState<Drive[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const { setDrive, drive, setDirectory, setStep } = usePhotoContext();
+  const { setDrive, drive, setDirectory, setStep, hasPrevious } = usePhotoContext();
 
   const { fetchDrives } = useOs();
 
@@ -55,7 +55,7 @@ export const DriveSelector: FC = () => {
           <Skeleton variant="rounded" width="100%" height={88} />
         </Stack>
       )}
-      {!isLoading && <DriveSelectorList onSelect={handleSelectChange} drives={drives} drive={drive} />}
+      {!isLoading && <DriveSelectorList onSelect={handleSelectChange} drives={drives} drive={drive} hasPrevious={hasPrevious} />}
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="contained" color="primary" disabled={!drive} onClick={handleNextClick}>
           Next

@@ -19,9 +19,10 @@ interface DriveSelectorListProperties {
   onSelect: (drive: Drive) => void;
   drives: Drive[];
   drive: Drive | null;
+  hasPrevious: boolean | null;
 }
 
-export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, drives, drive }) => {
+export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, drives, drive, hasPrevious }) => {
   const [selectedDrive, setSelectedDrive] = useState<Drive | null>(drive || null);
 
   const handleListItemClick = (drive: Drive) => {
@@ -43,7 +44,7 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, d
 
   // We need to create auto select of first removable drive
   useEffect(() => {
-    if (selectedDrive) {
+    if (selectedDrive || hasPrevious === null) {
       return;
     }
 
@@ -51,7 +52,7 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, d
     if (removableDrive) {
       handleListItemClick(removableDrive);
     }
-  }, [drives, selectedDrive]);
+  }, [drives, selectedDrive, hasPrevious]);
 
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
