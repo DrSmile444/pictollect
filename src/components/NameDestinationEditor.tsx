@@ -1,11 +1,16 @@
 import { Button, Card, Stack, TextField, Typography } from '@mui/material';
-import React, { FC } from 'react';
+import Box from '@mui/material/Box';
+import React, { FC, useMemo } from 'react';
 
 import { usePhotoContext } from '../context';
 import { useOs } from '../hooks';
+import { selectBalancedItems } from '../utils';
+
+import { DatePhoto } from './DatePhoto';
+import { DetailRow } from './DetailRow';
 
 export const NameDestinationEditor: FC = () => {
-  const { destination, setDestination } = usePhotoContext();
+  const { destination, setDestination, computedFolderName, folderName, setFolderName, dateOfPhotos, files } = usePhotoContext();
 
   const { pickFolder } = useOs();
 
@@ -18,30 +23,60 @@ export const NameDestinationEditor: FC = () => {
     setDestination(folder.filePaths[0]);
   };
 
+  const photos = useMemo(() => (files ? files.files.filter((file) => file.fullDate === dateOfPhotos?.value) : []), [files, dateOfPhotos]);
+
+  const displayPhotos = useMemo(() => selectBalancedItems(photos, 100), [photos]);
+
   return (
-    <Stack gap={2} direction="row">
-      <Card sx={{ width: '100%', padding: 2 }}>
-        <Stack gap={1}>
-          <Typography variant="h3" typography="h5">
-            Settings
-          </Typography>
+    <Stack gap={2}>
+      <Stack gap={2} direction="row">
+        <Card sx={{ width: '100%', padding: 2 }}>
+          <Stack gap={1}>
+            <Typography variant="h3" typography="h5">
+              Settings
+            </Typography>
 
-          <TextField id="outlined-basic" label="Folder Name" variant="outlined" />
-          <Button onClick={chooseDestination} variant="outlined">
-            Choose Destination
-          </Button>
-        </Stack>
-      </Card>
+            <TextField
+              id="outlined-basic"
+              value={folderName}
+              label="Folder Name"
+              variant="outlined"
+              onChange={(event) => {
+                setFolderName(event.target.value);
+              }}
+            />
+            <Button onClick={chooseDestination} variant="outlined">
+              Choose Destination
+            </Button>
+          </Stack>
+        </Card>
+
+        <Card sx={{ width: '100%', padding: 2 }}>
+          <Stack gap={1}>
+            <Typography variant="h3" typography="h5">
+              Preview
+            </Typography>
+
+            <DetailRow label="Folder Name" value={computedFolderName} />
+            <DetailRow label="Destination" value={destination} />
+          </Stack>
+        </Card>
+      </Stack>
 
       <Card sx={{ width: '100%', padding: 2 }}>
-        <Stack gap={1}>
-          <Typography variant="h3" typography="h5">
-            Preview
-          </Typography>
-          <Typography variant="body1" typography="body1">
-            Destination: {destination || 'Empty'}
-          </Typography>
-        </Stack>
+        <Typography variant="h3" typography="h5">
+          Photos
+        </Typography>
+
+        <Typography variant="subtitle1" color="textSecondary">
+          Displayed {displayPhotos.length} photos of {photos.length}
+        </Typography>
+
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+          {displayPhotos.map((photo) => (
+            <DatePhoto photo={photo} gridSize={3} key={photo.fileName} />
+          ))}
+        </Box>
       </Card>
     </Stack>
   );

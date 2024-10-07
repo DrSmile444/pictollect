@@ -26,7 +26,7 @@ export const DatePhotoGridItem: FC<DatePhotoGridItemProperties> = ({ files, date
         files.filter((photo) => !photo.isRaw),
         gridSize * gridSize,
       ),
-    files,
+    [files],
   );
 
   const onClick = () => {

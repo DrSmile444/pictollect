@@ -7,8 +7,7 @@ import { usePhotoContext } from '../context';
 import { useOs } from '../hooks';
 
 export const DateSelector = () => {
-  const { dateOfPhotos, directory, setStep } = usePhotoContext();
-  const [files, setFiles] = useState<FileList | null>(null);
+  const { dateOfPhotos, directory, setStep, files, setFiles } = usePhotoContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { getFiles } = useOs();
@@ -24,10 +23,10 @@ export const DateSelector = () => {
   useEffect(() => {
     const fetch = async () => {
       setIsLoading(true);
-      const files = await getFiles(directory);
-      setFiles(files);
+      const newFiles = await getFiles(directory);
+      setFiles(newFiles);
       setIsLoading(false);
-      console.info('Files:', files);
+      console.info('Files:', newFiles);
     };
 
     fetch();
