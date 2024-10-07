@@ -8,4 +8,12 @@ contextBridge.exposeInMainWorld('electron', {
   getFiles: (path: string) => ipcRenderer.invoke('get-files', path),
   getImageThumbnail: (filePath: string) => ipcRenderer.invoke('get-image-thumbnail', filePath),
   pickFolder: () => ipcRenderer.invoke('pick-folder'),
+  useStore: () => ipcRenderer.invoke('use-store'),
+});
+
+contextBridge.exposeInMainWorld('electronStore', {
+  get: (key: string) => ipcRenderer.invoke('get-store', key),
+  set: (key: string, value: any) => ipcRenderer.invoke('set-store', key, value),
+  delete: (key: string) => ipcRenderer.invoke('delete-store', key),
+  clear: () => ipcRenderer.invoke('clear-store'),
 });
