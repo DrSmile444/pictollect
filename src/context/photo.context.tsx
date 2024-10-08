@@ -1,6 +1,8 @@
 import { DateMeta, Drive, FileList } from 'move-from-sd/src/interfaces';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
+export type PhotosAction = 'copy' | 'move' | 'delete';
+
 interface PhotoContextType {
   step: 'drive' | 'directory' | 'date' | 'name';
   drive: Drive | null;
@@ -10,6 +12,7 @@ interface PhotoContextType {
   folderName: string | null;
   computedFolderName: string | null;
   files: FileList | null;
+  action: PhotosAction | null;
   setStep: (step: 'drive' | 'directory' | 'date' | 'name') => void;
   setDrive: (drive: Drive) => void;
   setDirectory: (directory: string) => void;
@@ -18,6 +21,7 @@ interface PhotoContextType {
   hasPrevious: boolean | null;
   setFolderName: (name: string) => void;
   setFiles: (files: FileList) => void;
+  setAction: (action: PhotosAction) => void;
   reset: () => void;
 }
 
@@ -43,6 +47,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const [folderName, setFolderName] = useState<string | null>(null);
   const [destination, setDestination] = useState<string | null>(null);
+  const [action, setAction] = useState<PhotosAction | null>(null);
 
   const [hasPrevious, setHasPrevious] = useState<boolean | null>(null);
 
@@ -68,6 +73,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       setDateOfPhotos(store.dateOfPhotos);
       setStep(store.step);
       setFolderName(store.folderName);
+      setAction(store.action);
 
       setDestination(destination);
 
@@ -85,11 +91,12 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         dateOfPhotos,
         step,
         folderName,
+        action,
       });
 
       window.electronStore.set('destination', destination);
     }
-  }, [step, drive, directory, dateOfPhotos, hasPrevious, destination, folderName, files]);
+  }, [step, drive, directory, dateOfPhotos, hasPrevious, destination, folderName, files, action]);
 
   useEffect(() => {
     fetchStore();
@@ -107,6 +114,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         folderName,
         computedFolderName,
         files,
+        action,
         setFolderName,
         setDrive,
         setDirectory,
@@ -115,6 +123,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         reset,
         setDestination,
         setFiles,
+        setAction,
       }}
     >
       {children}
