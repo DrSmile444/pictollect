@@ -4,16 +4,17 @@ import Box from '@mui/material/Box';
 import React from 'react';
 
 import { usePhotoContext } from './context';
-import { DateSelector, DriveSelector, FolderSelector, NamePage } from './pages';
+import { DateSelector, DriveSelector, FolderSelector, NamePage, ProgressPage } from './pages';
 
 const App: React.FC = () => {
   const { step, reset } = usePhotoContext();
 
-  const stepMap: Record<string, React.ReactElement> = {
+  const stepMap: Record<typeof step, React.ReactElement> = {
     drive: <DriveSelector />,
     directory: <FolderSelector />,
     date: <DateSelector />,
     name: <NamePage />,
+    progress: <ProgressPage />,
   };
 
   return (

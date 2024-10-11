@@ -1,5 +1,7 @@
 import { FileList } from 'move-from-sd/src/interfaces';
 
+import { ProcessCallbackInfo, ProcessFilesRequest } from '../interfaces';
+
 export const useOs = () => {
   const fetchDrives = async () => {
     // Fetch drives using Electron IPC communication
@@ -41,5 +43,20 @@ export const useOs = () => {
     return null;
   };
 
-  return { fetchDrives, fetchFolders, getFiles, loadImage, pickFolder };
+  const processFiles = async (info: ProcessFilesRequest) => {
+    // Process files using Electron IPC communication
+    if (window.electron && window.electron.processFiles) {
+      return window.electron.processFiles(info);
+    }
+
+    return null;
+  };
+
+  const subscribeToProcessFilesProgress = (callback: (info: ProcessCallbackInfo) => void) => {
+    if (window.electron && window.electron.onProcessFilesProgress) {
+      window.electron.onProcessFilesProgress(callback);
+    }
+  };
+
+  return { fetchDrives, fetchFolders, getFiles, loadImage, pickFolder, processFiles, subscribeToProcessFilesProgress };
 };

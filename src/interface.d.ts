@@ -1,8 +1,12 @@
 import { BaseMethods } from 'move-from-sd/src/os/base-methods';
 
+import { ProcessCallbackInfo, ProcessFilesRequest } from './interfaces';
+
 export type ElectronAPI = BaseMethods & {
   getImageThumbnail: (path: string) => Promise<string | null>;
   pickFolder: () => Promise<Electron.OpenDialogReturnValue>;
+  processFiles: (info: ProcessFilesRequest) => Promise<void>;
+  onProcessFilesProgress: (callback: (info: ProcessCallbackInfo) => void) => void;
 };
 
 export interface ElectronStore {

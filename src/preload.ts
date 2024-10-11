@@ -2,6 +2,8 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 import { contextBridge, ipcRenderer } from 'electron';
 
+import { ProcessCallbackInfo } from './interfaces';
+
 contextBridge.exposeInMainWorld('electron', {
   getDrives: () => ipcRenderer.invoke('get-drives'),
   getFolders: (drive: string) => ipcRenderer.invoke('get-folders', drive),
@@ -9,6 +11,12 @@ contextBridge.exposeInMainWorld('electron', {
   getImageThumbnail: (filePath: string) => ipcRenderer.invoke('get-image-thumbnail', filePath),
   pickFolder: () => ipcRenderer.invoke('pick-folder'),
   useStore: () => ipcRenderer.invoke('use-store'),
+  processFiles: (info: ProcessCallbackInfo) => ipcRenderer.invoke('process-files', info),
+  onProcessFilesProgress: (callback: (info: ProcessCallbackInfo) => void) => {
+    ipcRenderer.on('process-files-progress', (event, info) => {
+      callback(info);
+    });
+  },
 });
 
 contextBridge.exposeInMainWorld('electronStore', {

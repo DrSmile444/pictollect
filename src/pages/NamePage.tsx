@@ -1,19 +1,21 @@
 import { Button, Stack, Typography } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { NameDestinationEditor } from '../components';
 import { usePhotoContext } from '../context';
 
 export const NamePage = () => {
-  const { setStep } = usePhotoContext();
+  const { setStep, drive, directory, dateOfPhotos, action } = usePhotoContext();
 
   const handleNextClick = () => {
-    setStep(null);
+    setStep('progress');
   };
 
   const handlePreviousClick = () => {
     setStep('date');
   };
+
+  const isPhotoStepReady = useMemo(() => !!drive && !!directory && !!dateOfPhotos && !!action, [drive, directory, dateOfPhotos, action]);
 
   return (
     <Stack gap={2}>
@@ -27,7 +29,7 @@ export const NamePage = () => {
         <Button variant="outlined" color="primary" onClick={handlePreviousClick}>
           Previous
         </Button>
-        <Button variant="contained" color="primary" disabled={true} onClick={handleNextClick}>
+        <Button variant="contained" color="primary" disabled={!isPhotoStepReady} onClick={handleNextClick}>
           Next
         </Button>
       </Stack>

@@ -1,19 +1,22 @@
-import { DateMeta, Drive, FileList } from 'move-from-sd/src/interfaces';
+import { DateMeta, Drive, FileList, FileMeta } from 'move-from-sd/src/interfaces';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+
+import { OperationType } from '../interfaces';
 
 export type PhotosAction = 'copy' | 'move' | 'delete';
 
 interface PhotoContextType {
-  step: 'drive' | 'directory' | 'date' | 'name';
+  step: 'drive' | 'directory' | 'date' | 'name' | 'progress';
   drive: Drive | null;
   directory: string | null;
   dateOfPhotos: DateMeta | null;
   destination: string | null;
   folderName: string | null;
   computedFolderName: string | null;
+  computedFiles: FileMeta[] | null;
   files: FileList | null;
-  action: PhotosAction | null;
-  setStep: (step: 'drive' | 'directory' | 'date' | 'name') => void;
+  action: OperationType | null;
+  setStep: (step: 'drive' | 'directory' | 'date' | 'name' | 'progress') => void;
   setDrive: (drive: Drive) => void;
   setDirectory: (directory: string) => void;
   setDateOfPhotos: (date: DateMeta) => void;
@@ -21,7 +24,7 @@ interface PhotoContextType {
   hasPrevious: boolean | null;
   setFolderName: (name: string) => void;
   setFiles: (files: FileList) => void;
-  setAction: (action: PhotosAction) => void;
+  setAction: (action: OperationType) => void;
   reset: () => void;
 }
 
@@ -38,7 +41,7 @@ export const usePhotoContext = (): PhotoContextType => {
 
 // Provider component
 export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [step, setStep] = useState<'drive' | 'directory' | 'date' | 'name'>('drive');
+  const [step, setStep] = useState<'drive' | 'directory' | 'date' | 'name' | 'progress'>('drive');
   const [drive, setDrive] = useState<Drive | null>(null);
   const [directory, setDirectory] = useState<string | null>(null);
   const [dateOfPhotos, setDateOfPhotos] = useState<DateMeta | null>(null);
@@ -47,13 +50,18 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const [folderName, setFolderName] = useState<string | null>(null);
   const [destination, setDestination] = useState<string | null>(null);
-  const [action, setAction] = useState<PhotosAction | null>(null);
+  const [action, setAction] = useState<OperationType | null>(null);
 
   const [hasPrevious, setHasPrevious] = useState<boolean | null>(null);
 
   const computedFolderName = useMemo(
     () => [dateOfPhotos?.value, folderName?.trim().split(' ').join('-').toLowerCase()].filter(Boolean).join('-'),
     [dateOfPhotos, folderName],
+  );
+
+  const computedFiles = useMemo(
+    () => (files ? files.files.filter((file) => file.fullDate === dateOfPhotos?.value) : []),
+    [files, dateOfPhotos],
   );
 
   const reset = () => {
@@ -113,6 +121,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         destination,
         folderName,
         computedFolderName,
+        computedFiles,
         files,
         action,
         setFolderName,

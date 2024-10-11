@@ -5,13 +5,14 @@ import React, { FC, useMemo } from 'react';
 
 import { usePhotoContext } from '../context';
 import { useOs } from '../hooks';
+import { OperationType } from '../interfaces';
 import { selectBalancedItems } from '../utils';
 
 import { DatePhoto } from './DatePhoto';
 import { DetailRow } from './DetailRow';
 
 export const NameDestinationEditor: FC = () => {
-  const { destination, setDestination, computedFolderName, folderName, setFolderName, dateOfPhotos, files, setAction, action } =
+  const { destination, setDestination, computedFolderName, computedFiles, folderName, setFolderName, setAction, action } =
     usePhotoContext();
 
   const { pickFolder } = useOs();
@@ -25,9 +26,7 @@ export const NameDestinationEditor: FC = () => {
     setDestination(folder.filePaths[0]);
   };
 
-  const photos = useMemo(() => (files ? files.files.filter((file) => file.fullDate === dateOfPhotos?.value) : []), [files, dateOfPhotos]);
-
-  const displayPhotos = useMemo(() => selectBalancedItems(photos, 100), [photos]);
+  const displayPhotos = useMemo(() => selectBalancedItems(computedFiles, 100), [computedFiles]);
 
   return (
     <Stack gap={2}>
@@ -60,9 +59,9 @@ export const NameDestinationEditor: FC = () => {
 
             <Stack gap={1} direction="row">
               <Button
-                variant={action === 'copy' ? 'contained' : 'outlined'}
-                color={action === 'copy' ? 'success' : 'primary'}
-                onClick={() => setAction('copy')}
+                variant={action === OperationType.COPY ? 'contained' : 'outlined'}
+                color={action === OperationType.COPY ? 'success' : 'primary'}
+                onClick={() => setAction(OperationType.COPY)}
               >
                 <Stack alignItems="center">
                   <FileCopyRounded />
@@ -71,9 +70,9 @@ export const NameDestinationEditor: FC = () => {
               </Button>
 
               <Button
-                variant={action === 'move' ? 'contained' : 'outlined'}
-                color={action === 'move' ? 'warning' : 'primary'}
-                onClick={() => setAction('move')}
+                variant={action === OperationType.MOVE ? 'contained' : 'outlined'}
+                color={action === OperationType.MOVE ? 'warning' : 'primary'}
+                onClick={() => setAction(OperationType.MOVE)}
               >
                 <Stack alignItems="center">
                   <MoveDownRounded />
@@ -82,9 +81,9 @@ export const NameDestinationEditor: FC = () => {
               </Button>
 
               <Button
-                variant={action === 'delete' ? 'contained' : 'outlined'}
-                color={action === 'delete' ? 'error' : 'primary'}
-                onClick={() => setAction('delete')}
+                variant={action === OperationType.DELETE ? 'contained' : 'outlined'}
+                color={action === OperationType.DELETE ? 'error' : 'primary'}
+                onClick={() => setAction(OperationType.DELETE)}
               >
                 <Stack alignItems="center">
                   <DeleteRounded />
@@ -114,7 +113,7 @@ export const NameDestinationEditor: FC = () => {
         </Typography>
 
         <Typography variant="subtitle1" color="textSecondary">
-          Displayed {displayPhotos.length} photos of {photos.length}
+          Displayed {displayPhotos.length} photos of {computedFiles.length}
         </Typography>
 
         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
