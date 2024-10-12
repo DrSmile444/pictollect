@@ -64,6 +64,7 @@
     "electron-store": "^10.0.0",
     "move-from-sd": "file:../move-from-sd",
     "pretty-bytes": "^6.1.1",
+    "pretty-ms": "^9.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sharp": "^0.33.5"
