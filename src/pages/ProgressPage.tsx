@@ -1,14 +1,17 @@
 import { Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
+import { ProgressDetails } from '../components';
 import { usePhotoContext } from '../context';
 import { useOs } from '../hooks';
+import { ProcessCallbackInfo } from '../interfaces';
 
 export const ProgressPage = () => {
   const { setStep, destination, computedFolderName, computedFiles, action } = usePhotoContext();
   const { processFiles, subscribeToProcessFilesProgress } = useOs();
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [info, setInfo] = useState<ProcessCallbackInfo | null>(null);
 
   const startProcessFiles = async () => {
     setIsProcessing(true);
@@ -24,10 +27,10 @@ export const ProgressPage = () => {
   };
 
   useEffect(() => {
-    console.log('ProgressPage', { destination, computedFolderName, computedFiles, action });
     startProcessFiles();
 
     subscribeToProcessFilesProgress((info) => {
+      setInfo(info);
       console.log('ProgressPage info', info);
     });
   }, []);
@@ -47,6 +50,8 @@ export const ProgressPage = () => {
       </Typography>
 
       {JSON.stringify({ isProcessing })}
+
+      <ProgressDetails info={info} totalFiles={computedFiles.length} type={action} />
 
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="outlined" color="primary" onClick={handlePreviousClick}>

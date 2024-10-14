@@ -53,8 +53,8 @@ export const useOs = () => {
   };
 
   const subscribeToProcessFilesProgress = (callback: (info: ProcessCallbackInfo) => void) => {
-    if (window.electron && window.electron.onProcessFilesProgress) {
-      window.electron.onProcessFilesProgress(callback);
+    if (window.electron && window.electron.onProcessFilesInfo) {
+      window.electron.onProcessFilesInfo(callback);
     }
   };
 

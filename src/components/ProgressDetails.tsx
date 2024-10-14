@@ -7,12 +7,16 @@ import { ProcessError } from './ProcessError';
 import { ProcessProgress } from './ProcessProgress';
 
 export interface ProgressDetailsProperties {
-  info: ProcessCallbackInfo;
+  info: ProcessCallbackInfo | null;
   totalFiles: number;
   type: OperationType;
 }
 
 export const ProgressDetails: FC<ProgressDetailsProperties> = ({ info, totalFiles, type }) => {
+  if (!info) {
+    return null;
+  }
+
   switch (info.type) {
     case 'progress': {
       return <ProcessProgress info={info} totalFiles={totalFiles} type={type} />;

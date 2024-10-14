@@ -6,7 +6,7 @@ export type ElectronAPI = BaseMethods & {
   getImageThumbnail: (path: string) => Promise<string | null>;
   pickFolder: () => Promise<Electron.OpenDialogReturnValue>;
   processFiles: (info: ProcessFilesRequest) => Promise<void>;
-  onProcessFilesProgress: (callback: (info: ProcessCallbackInfo) => void) => void;
+  onProcessFilesInfo: (callback: (info: ProcessCallbackInfo) => void) => void;
 };
 
 export interface ElectronStore {

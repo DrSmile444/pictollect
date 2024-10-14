@@ -12,8 +12,8 @@ contextBridge.exposeInMainWorld('electron', {
   pickFolder: () => ipcRenderer.invoke('pick-folder'),
   useStore: () => ipcRenderer.invoke('use-store'),
   processFiles: (info: ProcessCallbackInfo) => ipcRenderer.invoke('process-files', info),
-  onProcessFilesProgress: (callback: (info: ProcessCallbackInfo) => void) => {
-    ipcRenderer.on('process-files-progress', (event, info) => {
+  onProcessFilesInfo: (callback: (info: ProcessCallbackInfo) => void) => {
+    ipcRenderer.on('process-files-info', (event, info) => {
       callback(info);
     });
   },
