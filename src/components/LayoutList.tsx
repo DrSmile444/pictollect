@@ -7,16 +7,22 @@ import {
   SdStorageOutlined,
   SettingsSuggestOutlined,
 } from '@mui/icons-material';
-import { Chip, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
+import { Chip, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip } from '@mui/material';
 import React, { FC } from 'react';
 
+import { usePhotoContext } from '../context';
+import { PhotoStep } from '../interfaces';
+
+import { LightTooltip } from './LightTooltip';
+
 export const LayoutList: FC = () => {
-  const a = 1;
+  const { drive, directory, dateOfPhotos, setStep, reset, destination, chooseDestination } = usePhotoContext();
+
   return (
     <Stack justifyContent="space-between" height="100%">
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => setStep(PhotoStep.DRIVE)}>
             <ListItemIcon>
               <SdStorageOutlined />
             </ListItemIcon>
@@ -25,7 +31,7 @@ export const LayoutList: FC = () => {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => setStep(PhotoStep.DIRECTORY)} disabled={!drive}>
             <ListItemIcon>
               <FolderOutlined />
             </ListItemIcon>
@@ -34,7 +40,7 @@ export const LayoutList: FC = () => {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => setStep(PhotoStep.DATE)} disabled={!directory}>
             <ListItemIcon>
               <GrainRounded />
             </ListItemIcon>
@@ -43,7 +49,7 @@ export const LayoutList: FC = () => {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => setStep(PhotoStep.NAME)} disabled={!dateOfPhotos}>
             <ListItemIcon>
               <SettingsSuggestOutlined />
             </ListItemIcon>
@@ -58,7 +64,7 @@ export const LayoutList: FC = () => {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={() => reset()}>
             <ListItemIcon>
               <RestartAltRounded />
             </ListItemIcon>
@@ -69,7 +75,7 @@ export const LayoutList: FC = () => {
 
       <List>
         <ListItem disablePadding>
-          <ListItemButton>
+          <ListItemButton onClick={chooseDestination}>
             <ListItemIcon>
               <ExploreOutlined />
             </ListItemIcon>
@@ -77,32 +83,34 @@ export const LayoutList: FC = () => {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton>
-            <ListItemText>
-              <Stack direction="row" gap={1}>
-                <Chip
-                  label={
-                    <Stack direction="row" gap={0.5} alignItems="center">
-                      Is Set
-                      <CheckRounded fontSize="small" />
-                    </Stack>
-                  }
-                  sx={{ background: '#121212', color: '#fff', borderRadius: 1.5 }}
-                />
-                <Chip
-                  label="/Users/user/Documents/fromsd"
-                  sx={{
-                    borderRadius: 1.5,
-                    width: '100%',
-                    overflow: 'hidden',
-                    direction: 'rtl',
-                    whiteSpace: 'nowrap',
-                  }}
-                  variant="outlined"
-                />
-              </Stack>
-            </ListItemText>
-          </ListItemButton>
+          <LightTooltip title={destination}>
+            <ListItemButton onClick={chooseDestination}>
+              <ListItemText>
+                <Stack direction="row" gap={1}>
+                  <Chip
+                    label={
+                      <Stack direction="row" gap={0.5} alignItems="center">
+                        Is Set
+                        <CheckRounded fontSize="small" />
+                      </Stack>
+                    }
+                    sx={{ background: '#121212', color: '#fff', borderRadius: 1.5 }}
+                  />
+                  <Chip
+                    label={destination}
+                    sx={{
+                      borderRadius: 1.5,
+                      width: '100%',
+                      overflow: 'hidden',
+                      direction: 'rtl',
+                      whiteSpace: 'nowrap',
+                    }}
+                    variant="outlined"
+                  />
+                </Stack>
+              </ListItemText>
+            </ListItemButton>
+          </LightTooltip>
         </ListItem>
       </List>
     </Stack>

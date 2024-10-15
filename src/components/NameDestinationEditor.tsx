@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import React, { FC, useMemo } from 'react';
 
 import { usePhotoContext } from '../context';
-import { useOs } from '../hooks';
 import { OperationType } from '../interfaces';
 import { selectBalancedItems } from '../utils';
 
@@ -12,19 +11,8 @@ import { DatePhoto } from './DatePhoto';
 import { DetailRow } from './DetailRow';
 
 export const NameDestinationEditor: FC = () => {
-  const { destination, setDestination, computedFolderName, computedFiles, folderName, setFolderName, setAction, action } =
+  const { destination, computedFolderName, computedFiles, folderName, setFolderName, setAction, action, chooseDestination } =
     usePhotoContext();
-
-  const { pickFolder } = useOs();
-
-  const chooseDestination = async () => {
-    const folder = await pickFolder();
-    if (folder.canceled) {
-      return;
-    }
-
-    setDestination(folder.filePaths[0]);
-  };
 
   const displayPhotos = useMemo(() => selectBalancedItems(computedFiles, 100), [computedFiles]);
 

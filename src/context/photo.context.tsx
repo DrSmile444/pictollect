@@ -1,6 +1,7 @@
 import { DateMeta, Drive, FileList, FileMeta } from 'move-from-sd/src/interfaces';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
+import { useOs } from '../hooks';
 import { OperationType, PhotoStep, SetterType } from '../interfaces';
 
 type PhotoContextSetters = SetterType<'step', PhotoStep> &
@@ -17,6 +18,7 @@ interface PhotoContextType extends PhotoContextSetters {
   computedFiles: FileMeta[] | null;
   hasPrevious: boolean | null;
   reset: () => void;
+  chooseDestination: () => void;
 }
 
 const PhotoContext = createContext<PhotoContextType | undefined>(undefined);
@@ -45,6 +47,8 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const [hasPrevious, setHasPrevious] = useState<boolean | null>(null);
 
+  const { pickFolder } = useOs();
+
   const computedFolderName = useMemo(
     () => [dateOfPhotos?.value, folderName?.trim().split(' ').join('-').toLowerCase()].filter(Boolean).join('-'),
     [dateOfPhotos, folderName],
@@ -61,6 +65,15 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setDateOfPhotos(null);
     setStep(PhotoStep.DRIVE);
     window.electronStore.delete('photoContext');
+  };
+
+  const chooseDestination = async () => {
+    const folder = await pickFolder();
+    if (folder.canceled) {
+      return;
+    }
+
+    setDestination(folder.filePaths[0]);
   };
 
   const fetchStore = async () => {
@@ -128,6 +141,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         computedFolderName,
         computedFiles,
         reset,
+        chooseDestination,
       }}
     >
       {children}
