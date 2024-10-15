@@ -1,30 +1,21 @@
 import { DateMeta, Drive, FileList, FileMeta } from 'move-from-sd/src/interfaces';
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
-import { OperationType } from '../interfaces';
+import { OperationType, PhotoStep, SetterType } from '../interfaces';
 
-export type PhotosAction = 'copy' | 'move' | 'delete';
+type PhotoContextSetters = SetterType<'step', PhotoStep> &
+  SetterType<'drive', Drive> &
+  SetterType<'directory', string> &
+  SetterType<'dateOfPhotos', DateMeta> &
+  SetterType<'destination', string> &
+  SetterType<'folderName', string> &
+  SetterType<'files', FileList> &
+  SetterType<'action', OperationType>;
 
-interface PhotoContextType {
-  step: 'drive' | 'directory' | 'date' | 'name' | 'progress';
-  drive: Drive | null;
-  directory: string | null;
-  dateOfPhotos: DateMeta | null;
-  destination: string | null;
-  folderName: string | null;
+interface PhotoContextType extends PhotoContextSetters {
   computedFolderName: string | null;
   computedFiles: FileMeta[] | null;
-  files: FileList | null;
-  action: OperationType | null;
-  setStep: (step: 'drive' | 'directory' | 'date' | 'name' | 'progress') => void;
-  setDrive: (drive: Drive) => void;
-  setDirectory: (directory: string) => void;
-  setDateOfPhotos: (date: DateMeta) => void;
-  setDestination: (destination: string) => void;
   hasPrevious: boolean | null;
-  setFolderName: (name: string) => void;
-  setFiles: (files: FileList) => void;
-  setAction: (action: OperationType) => void;
   reset: () => void;
 }
 
@@ -41,7 +32,7 @@ export const usePhotoContext = (): PhotoContextType => {
 
 // Provider component
 export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [step, setStep] = useState<'drive' | 'directory' | 'date' | 'name' | 'progress'>('drive');
+  const [step, setStep] = useState<PhotoContextSetters['step']>(PhotoStep.DRIVE);
   const [drive, setDrive] = useState<Drive | null>(null);
   const [directory, setDirectory] = useState<string | null>(null);
   const [dateOfPhotos, setDateOfPhotos] = useState<DateMeta | null>(null);
@@ -68,7 +59,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setDrive(null);
     setDirectory(null);
     setDateOfPhotos(null);
-    setStep('drive');
+    setStep(PhotoStep.DRIVE);
     window.electronStore.delete('photoContext');
   };
 
@@ -110,29 +101,33 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     fetchStore();
   }, []);
 
+  const contextSetters: PhotoContextSetters = {
+    step,
+    drive,
+    directory,
+    dateOfPhotos,
+    destination,
+    folderName,
+    files,
+    action,
+    setStep,
+    setDrive,
+    setDirectory,
+    setDateOfPhotos,
+    setDestination,
+    setFolderName,
+    setFiles,
+    setAction,
+  };
+
   return (
     <PhotoContext.Provider
       value={{
-        drive,
-        directory,
-        dateOfPhotos,
-        step,
+        ...contextSetters,
         hasPrevious,
-        destination,
-        folderName,
         computedFolderName,
         computedFiles,
-        files,
-        action,
-        setFolderName,
-        setDrive,
-        setDirectory,
-        setDateOfPhotos,
-        setStep,
         reset,
-        setDestination,
-        setFiles,
-        setAction,
       }}
     >
       {children}
