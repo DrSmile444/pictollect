@@ -6,6 +6,7 @@ import { DateMeta, FileMeta } from 'move-from-sd/src/interfaces';
 import React, { FC, useMemo } from 'react';
 
 import { usePhotoContext } from '../context';
+import { PhotoStep } from '../interfaces';
 import { selectBalancedItems } from '../utils/selectBalancedItems.util';
 
 import { DatePhoto } from './DatePhoto';
@@ -31,7 +32,7 @@ export const DatePhotoGridItem: FC<DatePhotoGridItemProperties> = ({ files, date
 
   const onClick = () => {
     setDateOfPhotos(dateInfo);
-    setStep('name');
+    setStep(PhotoStep.NAME);
   };
 
   const isSelectable = dateOfPhotos?.value === dateInfo.value;

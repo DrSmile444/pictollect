@@ -18,6 +18,10 @@ export const DriveSelector: FC = () => {
 
   const { fetchDrives } = useOs();
 
+  const handleNextClick = () => {
+    setStep(PhotoStep.DIRECTORY);
+  };
+
   const refreshDrives = () => {
     setIsLoading(true);
     fetchDrives()
@@ -38,13 +42,15 @@ export const DriveSelector: FC = () => {
     setDirectory(null);
   };
 
-  const handleNextClick = () => {
-    setStep(PhotoStep.DIRECTORY);
+  const handleDoubleSelectChange = (drive: Drive) => {
+    setDrive(drive);
+    setDirectory(null);
+    handleNextClick();
   };
 
   return (
     <Stack gap={2}>
-      <Stack gap={2} direction="row" justifyContent="space-between">
+      <Stack gap={2} direction="row">
         <Button onClick={refreshDrives} variant="outlined" startIcon={<RefreshRounded />}>
           Refresh
         </Button>
@@ -55,7 +61,15 @@ export const DriveSelector: FC = () => {
           <Skeleton variant="rounded" width="100%" height={88} />
         </Stack>
       )}
-      {!isLoading && <DriveSelectorList onSelect={handleSelectChange} drives={drives} drive={drive} hasPrevious={hasPrevious} />}
+      {!isLoading && (
+        <DriveSelectorList
+          onSelect={handleSelectChange}
+          onDoubleSelect={handleDoubleSelectChange}
+          drives={drives}
+          drive={drive}
+          hasPrevious={hasPrevious}
+        />
+      )}
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="contained" color="primary" disabled={!drive} onClick={handleNextClick}>
           Next

@@ -8,11 +8,18 @@ export interface FolderSelectorListProperties {
   folders: string[];
   folder: string | null;
   onFolderSelect: (folder: string) => void;
+  onFolderDoubleSelect: (folder: string) => void;
   isLoading?: boolean;
 }
 
 // we need to add filtering of folders
-export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, onFolderSelect, folder, isLoading }) => {
+export const FolderSelectorList: FC<FolderSelectorListProperties> = ({
+  folders,
+  onFolderSelect,
+  onFolderDoubleSelect,
+  folder,
+  isLoading,
+}) => {
   const [selectedFolder, setSelectedFolder] = useState<string | null>(folder);
   const [filteredFolders, setFilteredFolders] = useState<string[]>([]);
   const [search, setSearch] = useState<string>('');
@@ -24,6 +31,11 @@ export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, 
   const handleFolderSelect = (folder: string) => {
     setSelectedFolder(folder);
     onFolderSelect(folder);
+  };
+
+  const handleFolderDoubleSelect = (folder: string) => {
+    setSelectedFolder(folder);
+    onFolderDoubleSelect(folder);
   };
 
   useEffect(() => {
@@ -95,7 +107,12 @@ export const FolderSelectorList: FC<FolderSelectorListProperties> = ({ folders, 
             const icon = isSelected ? <FolderRounded /> : <FolderOutlined />;
 
             return (
-              <ListItemButton key={folder} selected={isSelected} onClick={() => handleFolderSelect(folder)}>
+              <ListItemButton
+                key={folder}
+                selected={isSelected}
+                onClick={() => handleFolderSelect(folder)}
+                onDoubleClick={() => handleFolderDoubleSelect(folder)}
+              >
                 <ListItemIcon>{icon}</ListItemIcon>
                 <ListItemText primary={folder} />
               </ListItemButton>

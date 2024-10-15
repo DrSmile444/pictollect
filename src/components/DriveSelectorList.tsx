@@ -17,17 +17,23 @@ import { EmptyState } from './EmptyState';
 
 interface DriveSelectorListProperties {
   onSelect: (drive: Drive) => void;
+  onDoubleSelect: (drive: Drive) => void;
   drives: Drive[];
   drive: Drive | null;
   hasPrevious: boolean | null;
 }
 
-export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, drives, drive, hasPrevious }) => {
+export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, onDoubleSelect, drives, drive, hasPrevious }) => {
   const [selectedDrive, setSelectedDrive] = useState<Drive | null>(drive || null);
 
   const handleListItemClick = (drive: Drive) => {
     setSelectedDrive(drive);
     onSelect(drive);
+  };
+
+  const handleListItemDoubleClick = (drive: Drive) => {
+    setSelectedDrive(drive);
+    onDoubleSelect(drive);
   };
 
   const iconsSelected: Record<Drive['driveType'], React.ReactElement> = {
@@ -76,7 +82,12 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, d
           const icon = isSelected ? iconsSelected[drive.driveType] : icons[drive.driveType];
 
           return (
-            <ListItemButton key={drive.drive} selected={isSelected} onClick={() => handleListItemClick(drive)}>
+            <ListItemButton
+              key={drive.drive}
+              selected={isSelected}
+              onClick={() => handleListItemClick(drive)}
+              onDoubleClick={() => handleListItemDoubleClick(drive)}
+            >
               <ListItemIcon>{icon}</ListItemIcon>
               <Stack gap={1} direction="column" width={1}>
                 <ListItemText primary={drive.drive + ' ' + drive.name} />

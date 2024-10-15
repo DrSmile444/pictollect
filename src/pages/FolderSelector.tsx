@@ -26,6 +26,11 @@ export const FolderSelector = () => {
     setDirectory(folder);
   };
 
+  const handleFolderDoubleSelect = (folder: string) => {
+    setDirectory(folder);
+    handleNextClick();
+  };
+
   useEffect(() => {
     const fetch = async () => {
       setIsLoading(true);
@@ -40,7 +45,13 @@ export const FolderSelector = () => {
 
   return (
     <Stack gap={2}>
-      <FolderSelectorList folders={folders} onFolderSelect={handleFolderSelect} folder={directory} isLoading={isLoading} />
+      <FolderSelectorList
+        folders={folders}
+        onFolderSelect={handleFolderSelect}
+        onFolderDoubleSelect={handleFolderDoubleSelect}
+        folder={directory}
+        isLoading={isLoading}
+      />
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="outlined" color="primary" onClick={handlePreviousClick}>
           Previous
