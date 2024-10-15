@@ -1,14 +1,15 @@
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import { ProgressDetails } from '../components';
-import { usePhotoContext } from '../context';
+import { useLayoutContext, usePhotoContext } from '../context';
 import { useOs } from '../hooks';
-import { ProcessCallbackInfo } from '../interfaces';
+import { PhotoStep, ProcessCallbackInfo } from '../interfaces';
 
 export const ProgressPage = () => {
   const { setStep, destination, computedFolderName, computedFiles, action } = usePhotoContext();
   const { processFiles, subscribeToProcessFilesProgress } = useOs();
+  const { setTitle } = useLayoutContext();
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [info, setInfo] = useState<ProcessCallbackInfo | null>(null);
@@ -33,6 +34,8 @@ export const ProgressPage = () => {
       setInfo(info);
       console.log('ProgressPage info', info);
     });
+
+    setTitle('Progress');
   }, []);
 
   const handleNextClick = () => {
@@ -40,17 +43,11 @@ export const ProgressPage = () => {
   };
 
   const handlePreviousClick = () => {
-    setStep('name');
+    setStep(PhotoStep.NAME);
   };
 
   return (
     <Stack gap={2}>
-      <Typography variant="h2" typography="h4">
-        Progress
-      </Typography>
-
-      {JSON.stringify({ isProcessing })}
-
       <ProgressDetails info={info} totalFiles={computedFiles.length} type={action} />
 
       <Stack gap={1} direction="row" alignItems="right">

@@ -1,28 +1,31 @@
 import { Button, Stack, Typography } from '@mui/material';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 
 import { NameDestinationEditor } from '../components';
-import { usePhotoContext } from '../context';
+import { useLayoutContext, usePhotoContext } from '../context';
+import { PhotoStep } from '../interfaces';
 
 export const NamePage = () => {
   const { setStep, drive, directory, dateOfPhotos, action } = usePhotoContext();
 
+  const { setTitle } = useLayoutContext();
+
   const handleNextClick = () => {
-    setStep('progress');
+    setStep(PhotoStep.PROGRESS);
   };
 
   const handlePreviousClick = () => {
-    setStep('date');
+    setStep(PhotoStep.DATE);
   };
 
   const isPhotoStepReady = useMemo(() => !!drive && !!directory && !!dateOfPhotos && !!action, [drive, directory, dateOfPhotos, action]);
 
+  useEffect(() => {
+    setTitle('Name and Destination');
+  }, []);
+
   return (
     <Stack gap={2}>
-      <Typography variant="h2" typography="h4">
-        Name and Destination
-      </Typography>
-
       <NameDestinationEditor />
 
       <Stack gap={1} direction="row" alignItems="right">

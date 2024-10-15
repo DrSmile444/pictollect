@@ -2,8 +2,9 @@ import { Button, Stack, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 
 import { FolderSelectorList } from '../components';
-import { usePhotoContext } from '../context';
+import { useLayoutContext, usePhotoContext } from '../context';
 import { useOs } from '../hooks';
+import { PhotoStep } from '../interfaces';
 
 export const FolderSelector = () => {
   const { drive, directory, setDirectory, setStep } = usePhotoContext();
@@ -11,13 +12,14 @@ export const FolderSelector = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { fetchFolders } = useOs();
+  const { setTitle } = useLayoutContext();
 
   const handleNextClick = () => {
-    setStep('date');
+    setStep(PhotoStep.DATE);
   };
 
   const handlePreviousClick = () => {
-    setStep('drive');
+    setStep(PhotoStep.DRIVE);
   };
 
   const handleFolderSelect = (folder: string) => {
@@ -32,14 +34,12 @@ export const FolderSelector = () => {
       setIsLoading(false);
     };
 
+    setTitle('Select a Folder');
     fetch();
   }, [drive]);
 
   return (
     <Stack gap={2}>
-      <Typography variant="h2" typography="h4">
-        Select a Folder
-      </Typography>
       <FolderSelectorList folders={folders} onFolderSelect={handleFolderSelect} folder={directory} isLoading={isLoading} />
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="outlined" color="primary" onClick={handlePreviousClick}>

@@ -1,18 +1,20 @@
 // DriveSelector.tsx
 import { RefreshRounded } from '@mui/icons-material';
-import { Button, Skeleton, Stack, Typography } from '@mui/material';
+import { Button, Skeleton, Stack } from '@mui/material';
 import { Drive } from 'move-from-sd/src/interfaces';
 import React, { FC, useEffect, useState } from 'react';
 
 import { DriveSelectorList } from '../components';
-import { usePhotoContext } from '../context';
+import { useLayoutContext, usePhotoContext } from '../context';
 import { useOs } from '../hooks';
+import { PhotoStep } from '../interfaces';
 
 export const DriveSelector: FC = () => {
   const [drives, setDrives] = useState<Drive[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { setDrive, drive, setDirectory, setStep, hasPrevious } = usePhotoContext();
+  const { setTitle } = useLayoutContext();
 
   const { fetchDrives } = useOs();
 
@@ -28,6 +30,7 @@ export const DriveSelector: FC = () => {
 
   useEffect(() => {
     refreshDrives();
+    setTitle('Select a Drive');
   }, []);
 
   const handleSelectChange = (drive: Drive) => {
@@ -36,15 +39,12 @@ export const DriveSelector: FC = () => {
   };
 
   const handleNextClick = () => {
-    setStep('directory');
+    setStep(PhotoStep.DIRECTORY);
   };
 
   return (
     <Stack gap={2}>
       <Stack gap={2} direction="row" justifyContent="space-between">
-        <Typography variant="h2" typography="h4">
-          Select a Drive
-        </Typography>
         <Button onClick={refreshDrives} variant="outlined" startIcon={<RefreshRounded />}>
           Refresh
         </Button>

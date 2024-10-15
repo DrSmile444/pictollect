@@ -1,23 +1,24 @@
 import { Button, Stack, Typography } from '@mui/material';
-import { FileList } from 'move-from-sd/src/interfaces';
 import React, { useEffect, useState } from 'react';
 
 import { DatePhotoGrid } from '../components/DatePhotoGrid';
-import { usePhotoContext } from '../context';
+import { useLayoutContext, usePhotoContext } from '../context';
 import { useOs } from '../hooks';
+import { PhotoStep } from '../interfaces';
 
 export const DateSelector = () => {
   const { dateOfPhotos, directory, setStep, files, setFiles } = usePhotoContext();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { getFiles } = useOs();
+  const { setTitle } = useLayoutContext();
 
   const handleNextClick = () => {
-    setStep('name');
+    setStep(PhotoStep.NAME);
   };
 
   const handlePreviousClick = () => {
-    setStep('directory');
+    setStep(PhotoStep.DIRECTORY);
   };
 
   useEffect(() => {
@@ -29,14 +30,13 @@ export const DateSelector = () => {
       console.info('Files:', newFiles);
     };
 
+    setTitle('Select a Date');
+
     fetch();
   }, []);
 
   return (
     <Stack gap={2}>
-      <Typography variant="h2" typography="h4">
-        Select a Date
-      </Typography>
       <DatePhotoGrid fileList={files} isLoading={isLoading} />
       <Stack gap={1} direction="row" alignItems="right">
         <Button variant="outlined" color="primary" onClick={handlePreviousClick}>
