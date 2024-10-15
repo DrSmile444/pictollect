@@ -3,6 +3,7 @@ import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import React from 'react';
 
+import { Layout } from './components';
 import { usePhotoContext } from './context';
 import { DateSelector, DriveSelector, FolderSelector, NamePage, ProgressPage } from './pages';
 
@@ -18,12 +19,12 @@ const App: React.FC = () => {
   };
 
   return (
-    <Box sx={{ padding: '20px' }}>
+    <Layout>
       {stepMap[step]}
       <Button startIcon={<RestartAltRounded />} onClick={reset}>
         Reset
       </Button>
-    </Box>
+    </Layout>
   );
 };
 
