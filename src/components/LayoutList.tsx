@@ -12,7 +12,7 @@ import {
 import { Chip, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import React, { FC } from 'react';
 
-import { usePhotoContext } from '../context';
+import { useConfirmation, usePhotoContext } from '../context';
 import { PhotoStep } from '../interfaces';
 
 import { LayoutListItemText } from './LayoutListItemText';
@@ -20,6 +20,23 @@ import { LightTooltip } from './LightTooltip';
 
 export const LayoutList: FC = () => {
   const { drive, directory, dateOfPhotos, setStep, step, reset, destination, chooseDestination } = usePhotoContext();
+
+  const { showConfirmation } = useConfirmation();
+
+  const handleReset = () => {
+    showConfirmation({
+      open: true,
+      title: 'Reset',
+      body: 'Are you sure you want to reset all the steps?',
+      cancelButtonText: 'Cancel',
+      acceptButtonText: 'Reset',
+      onClose: () => showConfirmation(null),
+      onAccept: () => {
+        reset();
+        showConfirmation(null);
+      },
+    });
+  };
 
   return (
     <Stack justifyContent="space-between" height="100%">
@@ -67,7 +84,7 @@ export const LayoutList: FC = () => {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton onClick={() => reset()}>
+          <ListItemButton onClick={handleReset}>
             <ListItemIcon>
               <RestartAltRounded />
             </ListItemIcon>
