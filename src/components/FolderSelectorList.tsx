@@ -42,6 +42,19 @@ export const FolderSelectorList: FC<FolderSelectorListProperties> = ({
     setFilteredFolders(folders.filter((folder) => folder.toLowerCase().includes(search.toLowerCase())));
   }, [folders, search]);
 
+  useEffect(() => {
+    if (filteredFolders.length === 1) {
+      setSelectedFolder(filteredFolders[0]);
+      onFolderSelect(filteredFolders[0]);
+    }
+  }, [filteredFolders]);
+
+  const handleInputEnter = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter' && selectedFolder) {
+      onFolderDoubleSelect(selectedFolder);
+    }
+  };
+
   if (isLoading) {
     return (
       <Stack gap={1} direction="column" width="100%">
@@ -73,6 +86,7 @@ export const FolderSelectorList: FC<FolderSelectorListProperties> = ({
         variant="outlined"
         value={search}
         onChange={handleFolderFilter}
+        onKeyPress={handleInputEnter}
         autoFocus={true}
         slotProps={{
           input: {
