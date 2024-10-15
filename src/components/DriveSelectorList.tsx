@@ -60,6 +60,10 @@ export const DriveSelectorList: FC<DriveSelectorListProperties> = ({ onSelect, o
     }
   }, [drives, selectedDrive, hasPrevious]);
 
+  useEffect(() => {
+    setSelectedDrive(drive);
+  }, [drive]);
+
   return (
     <Box sx={{ width: '100%', bgcolor: 'background.paper' }}>
       <List component="nav" aria-label="main mailbox folders">

@@ -32,6 +32,10 @@ export const FolderSelector = () => {
   };
 
   useEffect(() => {
+    if (!drive) {
+      return;
+    }
+
     const fetch = async () => {
       setIsLoading(true);
       const folders = await fetchFolders(drive.drive);

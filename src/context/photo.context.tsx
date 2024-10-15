@@ -6,6 +6,7 @@ import { OperationType, PhotoStep, SetterType } from '../interfaces';
 
 type PhotoContextSetters = SetterType<'step', PhotoStep> &
   SetterType<'drive', Drive> &
+  SetterType<'drives', Drive[]> &
   SetterType<'directory', string> &
   SetterType<'dateOfPhotos', DateMeta> &
   SetterType<'destination', string> &
@@ -34,6 +35,8 @@ export const usePhotoContext = (): PhotoContextType => {
 
 // Provider component
 export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [drives, setDrives] = useState<Drive[]>([]);
+
   const [step, setStep] = useState<PhotoContextSetters['step']>(PhotoStep.DRIVE);
   const [drive, setDrive] = useState<Drive | null>(null);
   const [directory, setDirectory] = useState<string | null>(null);
@@ -46,6 +49,8 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [action, setAction] = useState<OperationType | null>(null);
 
   const [hasPrevious, setHasPrevious] = useState<boolean | null>(null);
+
+  const [hasMagicDriveApplied, setHasMagicDriveApplied] = useState<boolean>(false);
 
   const { pickFolder } = useOs();
 
@@ -79,6 +84,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const fetchStore = async () => {
     const store = await window.electronStore.get('photoContext');
     const destination = await window.electronStore.get('destination');
+
     if (store) {
       setDrive(store.drive);
       setDirectory(store.directory);
@@ -96,6 +102,13 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   useEffect(() => {
+    if (step === PhotoStep.DIRECTORY) {
+      console.log('lastDrive', drive);
+      window.electronStore.set('lastDrive', drive);
+    }
+  }, [step, drive]);
+
+  useEffect(() => {
     if (hasPrevious !== null) {
       window.electronStore.set('photoContext', {
         drive,
@@ -110,11 +123,32 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, [step, drive, directory, dateOfPhotos, hasPrevious, destination, folderName, files, action]);
 
+  const magicDriveUpdate = async () => {
+    const lastDrive = await window.electronStore.get('lastDrive');
+
+    const foundDrive = drives.find((d) => d.drive === lastDrive?.drive);
+
+    if (foundDrive) {
+      console.log('foundDrive', foundDrive);
+      setDrive(foundDrive);
+    }
+  };
+
+  useEffect(() => {
+    magicDriveUpdate();
+
+    if (!drive && !hasMagicDriveApplied && drives.length > 0) {
+      setStep(PhotoStep.DIRECTORY);
+      setHasMagicDriveApplied(true);
+    }
+  }, [drive, drives, hasMagicDriveApplied]);
+
   useEffect(() => {
     fetchStore();
   }, []);
 
   const contextSetters: PhotoContextSetters = {
+    drives,
     step,
     drive,
     directory,
@@ -123,6 +157,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     folderName,
     files,
     action,
+    setDrives,
     setStep,
     setDrive,
     setDirectory,

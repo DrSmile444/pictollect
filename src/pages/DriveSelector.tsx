@@ -10,10 +10,9 @@ import { useOs } from '../hooks';
 import { PhotoStep } from '../interfaces';
 
 export const DriveSelector: FC = () => {
-  const [drives, setDrives] = useState<Drive[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const { setDrive, drive, setDirectory, setStep, hasPrevious } = usePhotoContext();
+  const { setDrive, drive, setDirectory, setStep, hasPrevious, drives, setDrives } = usePhotoContext();
   const { setTitle } = useLayoutContext();
 
   const { fetchDrives } = useOs();
