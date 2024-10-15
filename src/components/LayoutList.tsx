@@ -1,5 +1,7 @@
 import {
+  AutoAwesomeOutlined,
   CheckRounded,
+  ClearRounded,
   ExploreOutlined,
   FolderOutlined,
   GrainRounded,
@@ -7,53 +9,54 @@ import {
   SdStorageOutlined,
   SettingsSuggestOutlined,
 } from '@mui/icons-material';
-import { Chip, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack, Tooltip } from '@mui/material';
+import { Chip, Divider, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Stack } from '@mui/material';
 import React, { FC } from 'react';
 
 import { usePhotoContext } from '../context';
 import { PhotoStep } from '../interfaces';
 
+import { LayoutListItemText } from './LayoutListItemText';
 import { LightTooltip } from './LightTooltip';
 
 export const LayoutList: FC = () => {
-  const { drive, directory, dateOfPhotos, setStep, reset, destination, chooseDestination } = usePhotoContext();
+  const { drive, directory, dateOfPhotos, setStep, step, reset, destination, chooseDestination } = usePhotoContext();
 
   return (
     <Stack justifyContent="space-between" height="100%">
       <List>
         <ListItem disablePadding>
-          <ListItemButton onClick={() => setStep(PhotoStep.DRIVE)}>
+          <ListItemButton onClick={() => setStep(PhotoStep.DRIVE)} selected={step === PhotoStep.DRIVE}>
             <ListItemIcon>
               <SdStorageOutlined />
             </ListItemIcon>
-            <ListItemText primary="Drive" />
+            <LayoutListItemText title="Drive" icon={<AutoAwesomeOutlined fontSize="small" />} active={!!drive} />
           </ListItemButton>
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton onClick={() => setStep(PhotoStep.DIRECTORY)} disabled={!drive}>
+          <ListItemButton onClick={() => setStep(PhotoStep.DIRECTORY)} selected={step === PhotoStep.DIRECTORY} disabled={!drive}>
             <ListItemIcon>
               <FolderOutlined />
             </ListItemIcon>
-            <ListItemText primary="Folder" />
+            <LayoutListItemText title="Folder" active={!!directory} />
           </ListItemButton>
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton onClick={() => setStep(PhotoStep.DATE)} disabled={!directory}>
+          <ListItemButton onClick={() => setStep(PhotoStep.DATE)} selected={step === PhotoStep.DATE} disabled={!directory}>
             <ListItemIcon>
               <GrainRounded />
             </ListItemIcon>
-            <ListItemText primary="Gallery" />
+            <LayoutListItemText title="Gallery" active={!!dateOfPhotos} />
           </ListItemButton>
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton onClick={() => setStep(PhotoStep.NAME)} disabled={!dateOfPhotos}>
+          <ListItemButton onClick={() => setStep(PhotoStep.NAME)} selected={step === PhotoStep.NAME} disabled={!dateOfPhotos}>
             <ListItemIcon>
               <SettingsSuggestOutlined />
             </ListItemIcon>
-            <ListItemText primary="Details" />
+            <LayoutListItemText title="Details" active={step === PhotoStep.PROGRESS} />
           </ListItemButton>
         </ListItem>
 
@@ -83,16 +86,23 @@ export const LayoutList: FC = () => {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <LightTooltip title={destination}>
+          <LightTooltip title={destination} placement="right">
             <ListItemButton onClick={chooseDestination}>
               <ListItemText>
                 <Stack direction="row" gap={1}>
                   <Chip
                     label={
-                      <Stack direction="row" gap={0.5} alignItems="center">
-                        Is Set
-                        <CheckRounded fontSize="small" />
-                      </Stack>
+                      destination ? (
+                        <Stack direction="row" gap={0.5} alignItems="center">
+                          Is Set
+                          <CheckRounded fontSize="small" />
+                        </Stack>
+                      ) : (
+                        <Stack direction="row" gap={0.5} alignItems="center">
+                          Not Set
+                          <ClearRounded fontSize="small" />
+                        </Stack>
+                      )
                     }
                     sx={{ background: '#121212', color: '#fff', borderRadius: 1.5 }}
                   />
