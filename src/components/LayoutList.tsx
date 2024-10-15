@@ -46,7 +46,23 @@ export const LayoutList: FC = () => {
             <ListItemIcon>
               <SdStorageOutlined />
             </ListItemIcon>
-            <LayoutListItemText title="Drive" icon={<AutoAwesomeOutlined fontSize="small" />} active={!!drive} />
+            <LayoutListItemText
+              title="Drive"
+              icon={
+                <LightTooltip
+                  title={
+                    <Stack direction="row" gap={1} alignItems="center">
+                      Last selected drive will be auto set on next session, if available
+                      <AutoAwesomeOutlined fontSize="small" />
+                    </Stack>
+                  }
+                  placement="right"
+                >
+                  <AutoAwesomeOutlined fontSize="small" />
+                </LightTooltip>
+              }
+              active={!!drive}
+            />
           </ListItemButton>
         </ListItem>
 
