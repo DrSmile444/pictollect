@@ -2,6 +2,7 @@ import { DateMeta, Drive, FileList, FileMeta } from 'move-from-sd/src/interfaces
 import React, { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 
 import { useOs } from '../hooks';
+import { useMagicDriveSet } from '../hooks/useMagicDriveSet.hook';
 import { OperationType, PhotoStep, SetterType } from '../interfaces';
 
 type PhotoContextSetters = SetterType<'step', PhotoStep> &
@@ -50,9 +51,8 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   const [hasPrevious, setHasPrevious] = useState<boolean | null>(null);
 
-  const [hasMagicDriveApplied, setHasMagicDriveApplied] = useState<boolean>(false);
-
   const { pickFolder } = useOs();
+  const { setHasMagicDriveApplied } = useMagicDriveSet({ step, drives, drive, setDrive, setStep });
 
   const computedFolderName = useMemo(
     () => [dateOfPhotos?.value, folderName?.trim().split(' ').join('-').toLowerCase()].filter(Boolean).join('-'),
@@ -70,6 +70,7 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setDateOfPhotos(null);
     setStep(PhotoStep.DRIVE);
     window.electronStore.delete('photoContext');
+    setHasMagicDriveApplied(false);
   };
 
   const chooseDestination = async () => {
@@ -102,13 +103,6 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   };
 
   useEffect(() => {
-    if (step === PhotoStep.DIRECTORY) {
-      console.log('lastDrive', drive);
-      window.electronStore.set('lastDrive', drive);
-    }
-  }, [step, drive]);
-
-  useEffect(() => {
     if (hasPrevious !== null) {
       window.electronStore.set('photoContext', {
         drive,
@@ -122,26 +116,6 @@ export const PhotoProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       window.electronStore.set('destination', destination);
     }
   }, [step, drive, directory, dateOfPhotos, hasPrevious, destination, folderName, files, action]);
-
-  const magicDriveUpdate = async () => {
-    const lastDrive = await window.electronStore.get('lastDrive');
-
-    const foundDrive = drives.find((d) => d.drive === lastDrive?.drive);
-
-    if (foundDrive) {
-      console.log('foundDrive', foundDrive);
-      setDrive(foundDrive);
-    }
-  };
-
-  useEffect(() => {
-    magicDriveUpdate();
-
-    if (!drive && !hasMagicDriveApplied && drives.length > 0) {
-      setStep(PhotoStep.DIRECTORY);
-      setHasMagicDriveApplied(true);
-    }
-  }, [drive, drives, hasMagicDriveApplied]);
 
   useEffect(() => {
     fetchStore();
